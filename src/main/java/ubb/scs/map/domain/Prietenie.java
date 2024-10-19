@@ -2,7 +2,7 @@ package ubb.scs.map.domain;
 
 import java.util.Objects;
 
-public class Prietenie {
+public class Prietenie extends Entity<Long> {
     private Utilizator user1;
     private Utilizator user2;
 

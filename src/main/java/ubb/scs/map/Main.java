@@ -14,6 +14,7 @@ public class Main {
 //        Repository<Long, Prietenie> repo_friends = new InMemoryRepository<>(new PrietenieValidator());
         ConsoleUI consoleUI = new ConsoleUI(repo_users);
         consoleUI.run();
+        // TODO: Fa ceva structura de graf/arbore ca sa lege prieteniile (pt aflarea comunitatilor)
 
 
 
