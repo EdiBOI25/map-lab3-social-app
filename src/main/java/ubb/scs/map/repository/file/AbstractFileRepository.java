@@ -56,6 +56,9 @@ public abstract class AbstractFileRepository<ID, E extends Entity<ID>> extends I
 
     @Override
     public E delete(ID id) {
+        E e = super.delete(id);
+        if (e == null)
+            writeToFile();
         return null;
     }
 

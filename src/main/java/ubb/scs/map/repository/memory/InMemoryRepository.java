@@ -21,11 +21,18 @@ public class InMemoryRepository<ID, E extends Entity<ID>> implements Repository<
 
     @Override
     public E findOne(ID id) {
+        for (ID key: entities.keySet()){
+            if(key.equals(id))
+                return entities.get(key);
+        }
         return null;
     }
 
     @Override
     public Iterable<E> findAll() {
+        for (ID key: entities.keySet()){
+            return entities.values();
+        }
         return null;
     }
 
@@ -59,6 +66,13 @@ public class InMemoryRepository<ID, E extends Entity<ID>> implements Repository<
 
     @Override
     public E delete(ID id) {
+        for (ID key: entities.keySet()){
+            if(key.equals(id)){
+                E entity=entities.get(key);
+                entities.remove(key);
+                return entity;
+            }
+        }
         return null;
     }
 
