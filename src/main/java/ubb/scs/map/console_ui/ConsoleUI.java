@@ -7,12 +7,18 @@ import ubb.scs.map.repository.Repository;
 import java.util.Scanner;
 
 public class ConsoleUI{
-    private Repository<Long, Utilizator> repo_users;
-    private Repository<Long, Prietenie> repo_friendships;
+    protected Repository<Long, Utilizator> repo_users;
+    protected Repository<Long, Prietenie> repo_friendships;
+    private UserUI userUI;
+    private FriendshipUI friendshipUI;
+    private CommunitiesUI communitiesUI;
 
     public ConsoleUI(Repository<Long, Utilizator> repo_users, Repository<Long, Prietenie> repo_friendships) {
         this.repo_users = repo_users;
         this.repo_friendships = repo_friendships;
+        userUI = new UserUI(repo_users);
+        friendshipUI = new FriendshipUI(repo_friendships);
+        communitiesUI = new CommunitiesUI(repo_users, repo_friendships);
     }
 
     private void printMenu() {
@@ -32,17 +38,27 @@ public class ConsoleUI{
         printMenu();
         Scanner input = new Scanner(System.in);
         while(true) {
-            System.out.print("Introduceti optiunea: ");
-            int option = input.nextInt();
+            System.out.print("Introdu optiunea: ");
+            int option;
+            try {
+                option = input.nextInt();
+            } catch (Exception e) {
+                System.out.println("Optiune invalida");
+                input.nextLine();
+                continue;
+            }
             switch (option) {
                 case 1:
-                    System.out.println("Utilizatori");
+                    userUI.run();
+                    printMenu();
                     break;
                 case 2:
-                    System.out.println("Prietenii");
+                    friendshipUI.run();
+                    printMenu();
                     break;
                 case 3:
-                    System.out.println("Comunitati");
+                    communitiesUI.run();
+                    printMenu();
                     break;
                 case 0:
                     return;
