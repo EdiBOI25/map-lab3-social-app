@@ -1,30 +1,35 @@
 package ubb.scs.map.console_ui;
 
+import ubb.scs.map.domain.Prietenie;
 import ubb.scs.map.domain.Utilizator;
 import ubb.scs.map.repository.Repository;
 
 import java.util.Scanner;
 
-public class ConsoleUI {
-    private final String main_menu = "----------------------------\n" +
-            "MENIU PRINCIPAL\n" +
-            "----------------------------\n" +
-            "1. Utilizatori\n" +
-            "2. Prietenii\n" +
-            "0. Exit\n";
+public class ConsoleUI{
     private Repository<Long, Utilizator> repo_users;
-//    private Repository<Long, Prietenie> repo_friends;
+    private Repository<Long, Prietenie> repo_friendships;
 
-    public ConsoleUI(Repository<Long, Utilizator> repo_users) {
+    public ConsoleUI(Repository<Long, Utilizator> repo_users, Repository<Long, Prietenie> repo_friendships) {
         this.repo_users = repo_users;
+        this.repo_friendships = repo_friendships;
     }
 
-    private void showMainMenu() {
+    private void printMenu() {
+        String main_menu = """
+                ----------------------------
+                MENIU PRINCIPAL
+                ----------------------------
+                1. Meniu utilizatori
+                2. Meniu prietenii
+                3. Meniu comunitati
+                0. Exit
+                """;
         System.out.println(main_menu);
     }
 
     public void run() {
-        showMainMenu();
+        printMenu();
         Scanner input = new Scanner(System.in);
         while(true) {
             System.out.print("Introduceti optiunea: ");
@@ -35,6 +40,9 @@ public class ConsoleUI {
                     break;
                 case 2:
                     System.out.println("Prietenii");
+                    break;
+                case 3:
+                    System.out.println("Comunitati");
                     break;
                 case 0:
                     return;

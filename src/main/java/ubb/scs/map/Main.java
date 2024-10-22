@@ -13,8 +13,8 @@ import ubb.scs.map.repository.memory.InMemoryRepository;
 public class Main {
     public static void main(String[] args) {
         Repository<Long, Utilizator> repo_users = new InMemoryRepository<>(new UtilizatorValidator());
-        Repository<Long, Prietenie> repo_friends = new InMemoryRepository<>(new PrietenieValidator(repo_users));
-        ConsoleUI consoleUI = new ConsoleUI(repo_users);
+        Repository<Long, Prietenie> repo_friendships = new InMemoryRepository<>(new PrietenieValidator(repo_users));
+        ConsoleUI consoleUI = new ConsoleUI(repo_users, repo_friendships);
         consoleUI.run();
         // TODO: Fa ceva structura de graf/arbore ca sa lege prieteniile (pt aflarea comunitatilor)
 
