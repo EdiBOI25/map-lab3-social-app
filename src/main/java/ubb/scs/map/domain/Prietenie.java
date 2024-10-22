@@ -3,27 +3,27 @@ package ubb.scs.map.domain;
 import java.util.Objects;
 
 public class Prietenie extends Entity<Long> {
-    private Utilizator user1;
-    private Utilizator user2;
+    private long userId1;
+    private long userId2;
 
-    public Prietenie(Utilizator user1, Utilizator user2) {
-        this.user1 = user1;
-        this.user2 = user2;
+    public Prietenie(long userId1, long userId2) {
+        this.userId1 = userId1;
+        this.userId2 = userId2;
     }
 
-    public Utilizator getUser1() {
-        return user1;
+    public long getUser1Id() {
+        return userId1;
     }
 
-    public Utilizator getUser2() {
-        return user2;
+    public long getUser2Id() {
+        return userId2;
     }
 
     @Override
     public String toString() {
         return "Prietenie{" +
-                "user1=" + user1 +
-                ", user2=" + user2 +
+                "user1=" + userId1 +
+                ", user2=" + userId2 +
                 '}';
     }
 
@@ -31,15 +31,11 @@ public class Prietenie extends Entity<Long> {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Prietenie)) return false;
-        Prietenie that = (Prietenie) o;
-        Utilizator user1 = that.getUser1();
-        Utilizator user2 = that.getUser2();
-        return (this.user1.equals(user1) && this.user2.equals(user2))
-                || (this.user1.equals(user2) && this.user2.equals(user1));
+        return userId1 == ((Prietenie) o).userId1 && userId2 == ((Prietenie) o).userId2;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(user1.getId(), user2.getId());
+        return Objects.hash(userId1, userId2);
     }
 }
