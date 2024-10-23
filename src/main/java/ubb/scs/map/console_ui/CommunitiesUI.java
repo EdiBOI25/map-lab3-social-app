@@ -1,19 +1,15 @@
 package ubb.scs.map.console_ui;
 
-import ubb.scs.map.domain.Prietenie;
-import ubb.scs.map.domain.Utilizator;
-import ubb.scs.map.repository.Repository;
+import ubb.scs.map.service.CommunityService;
 
 import java.util.Scanner;
 
 public class CommunitiesUI {
-    private Repository<Long, Utilizator> repo_users;
-    private Repository<Long, Prietenie> repo_friendships;
+    private CommunityService service;
 
     // fara modificatori de acces ca sa poata fi accesat doar de catre pachet (adica doar de ConsoleUI)
-    CommunitiesUI(Repository<Long, Utilizator> repo_users, Repository<Long, Prietenie> repo_friendships) {
-        this.repo_users = repo_users;
-        this.repo_friendships = repo_friendships;
+    CommunitiesUI(CommunityService service) {
+        this.service = service;
     }
 
     private void printMenu() {
@@ -33,16 +29,38 @@ public class CommunitiesUI {
             int option = input.nextInt();
             switch (option) {
                 case 1:
-                    System.out.println("Number of comunities...\n");
+                    printCommunities();
+                    printMenu();
                     break;
                 case 2:
-                    System.out.println("Biggest community\n");
+                    printBiggestCommunity();
+                    printMenu();
                     break;
                 case 0:
                     return;
                 default:
                     System.out.println("Optiune invalida");
             }
+        }
+    }
+
+    private void printCommunities() {
+        try {
+            System.out.println("Number of communities: " + service.numberOfCommunities());
+        } catch (Exception e) {
+            System.out.println("0. " + e.getMessage());
+        }
+    }
+
+    private void printBiggestCommunity() {
+        try {
+            var list = service.biggestCommunity();
+            for(String user: list) {
+                System.out.println(user);
+            }
+            System.out.println();
+        } catch (Exception e) {
+            System.out.println("Nu exista. " + e.getMessage());
         }
     }
 }

@@ -9,6 +9,10 @@ public class Prietenie extends Entity<Long> {
     public Prietenie(long userId1, long userId2) {
         this.userId1 = userId1;
         this.userId2 = userId2;
+        if (userId1 > userId2) { // sa fie mereu in ordine crescatoare
+            this.userId1 = userId2;
+            this.userId2 = userId1;
+        }
     }
 
     public long getUser1Id() {

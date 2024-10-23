@@ -1,11 +1,10 @@
 package ubb.scs.map.service;
 
 import ubb.scs.map.domain.Entity;
-import ubb.scs.map.domain.validators.Validator;
 import ubb.scs.map.repository.Repository;
 
 public abstract class AbstractCrudService<ID, E extends Entity<ID>> implements CrudService<ID, E> {
-    private Repository<ID, E> repository;
+    protected Repository<ID, E> repository;
 
     public AbstractCrudService(Repository<ID, E> repository) {
         this.repository = repository;

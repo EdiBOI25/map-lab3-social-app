@@ -1,17 +1,16 @@
 package ubb.scs.map.console_ui;
 
-import ubb.scs.map.domain.Prietenie;
-import ubb.scs.map.domain.Utilizator;
-import ubb.scs.map.repository.Repository;
+
+import ubb.scs.map.service.FriendshipCrudService;
 
 import java.util.Scanner;
 
 public class FriendshipUI {
-    private Repository<Long, Prietenie> repo_friendships;
+    private FriendshipCrudService service;
 
     // fara modificatori de acces ca sa poata fi accesat doar de catre pachet (adica doar de ConsoleUI)
-    FriendshipUI(Repository<Long, Prietenie> repo_friendships) {
-        this.repo_friendships = repo_friendships;
+    FriendshipUI(FriendshipCrudService service) {
+        this.service = service;
     }
 
     private void printMenu() {
@@ -28,19 +27,82 @@ public class FriendshipUI {
         Scanner input = new Scanner(System.in);
         while(true) {
             System.out.print("Introdu optiunea: ");
-            int option = input.nextInt();
+            int option;
+            try {
+                option = input.nextInt();
+            } catch (Exception e) {
+                System.out.println("Optiune invalida");
+                input.nextLine();
+                continue;
+            }
             switch (option) {
                 case 1:
-                    System.out.println("Adding friendship\n");
+                    addFriendship();
+                    printMenu();
                     break;
                 case 2:
-                    System.out.println("Deleting friendship\n");
+                    deleteFriendship();
+                    printMenu();
                     break;
                 case 0:
                     return;
                 default:
                     System.out.println("Optiune invalida");
             }
+        }
+    }
+
+    private void addFriendship() {
+        Scanner input = new Scanner(System.in);
+        System.out.print("Introdu id-ul primului utilizator: ");
+        long id1, id2;
+        try {
+            id1 = input.nextLong();
+        } catch (Exception e) {
+            System.out.println("Numar invalid");
+            input.nextLine();
+            return;
+        }
+        System.out.print("Introdu id-ul celui de-al doilea utilizator: ");
+        try {
+            id2 = input.nextLong();
+        } catch (Exception e) {
+            System.out.println("Numar invalid");
+            input.nextLine();
+            return;
+        }
+
+        try {
+            var result = service.add(id1, id2);
+            if (result != null) {
+                throw new Exception("Prietenia nu a putut fi adaugata (id-ul deja exista");
+            }
+            System.out.println("Prietenie adaugata cu succes");
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void deleteFriendship() {
+        Scanner input = new Scanner(System.in);
+        System.out.print("Introdu id-ul prieteniei: ");
+        long id;
+        try {
+            id = input.nextLong();
+        } catch (Exception e) {
+            System.out.println("Numar invalid");
+            input.nextLine();
+            return;
+        }
+
+        try {
+            var result = service.delete(id);
+            if (result == null) {
+                throw new Exception("Prietenia nu a putut fi stearsa (id-ul nu exista)");
+            }
+            System.out.println("Prietenia a fost stearsa cu succes");
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
     }
 }

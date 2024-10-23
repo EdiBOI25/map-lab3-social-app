@@ -3,8 +3,6 @@ package ubb.scs.map.repository.file;
 import ubb.scs.map.domain.Utilizator;
 import ubb.scs.map.domain.validators.Validator;
 
-import java.io.BufferedWriter;
-
 public class UtilizatorRepository extends AbstractFileRepository<Long, Utilizator>{
     public UtilizatorRepository(Validator<Utilizator> validator, String fileName) {
         super(validator, fileName);
@@ -22,5 +20,13 @@ public class UtilizatorRepository extends AbstractFileRepository<Long, Utilizato
     public String saveEntity(Utilizator entity) {
         String s = entity.getId() + ";" + entity.getFirstName() + ";" + entity.getLastName();
         return s;
+    }
+
+    @Override
+    public Long getAvaliableId() {
+        var keys = entities.keySet();
+        if (keys.isEmpty())
+            return 1L;
+        return keys.stream().max(Long::compareTo).get() + 1;
     }
 }

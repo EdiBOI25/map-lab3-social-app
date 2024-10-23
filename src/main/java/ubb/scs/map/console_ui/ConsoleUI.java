@@ -2,23 +2,27 @@ package ubb.scs.map.console_ui;
 
 import ubb.scs.map.domain.Prietenie;
 import ubb.scs.map.domain.Utilizator;
-import ubb.scs.map.repository.Repository;
+import ubb.scs.map.service.*;
 
 import java.util.Scanner;
 
 public class ConsoleUI{
-    protected Repository<Long, Utilizator> repo_users;
-    protected Repository<Long, Prietenie> repo_friendships;
+    protected CrudService<Long, Utilizator> user_service;
+    protected CrudService<Long, Prietenie> friendship_service;
+    protected CommunityService community_service;
     private UserUI userUI;
     private FriendshipUI friendshipUI;
     private CommunitiesUI communitiesUI;
 
-    public ConsoleUI(Repository<Long, Utilizator> repo_users, Repository<Long, Prietenie> repo_friendships) {
-        this.repo_users = repo_users;
-        this.repo_friendships = repo_friendships;
-        userUI = new UserUI(repo_users);
-        friendshipUI = new FriendshipUI(repo_friendships);
-        communitiesUI = new CommunitiesUI(repo_users, repo_friendships);
+    public ConsoleUI(CrudService<Long, Utilizator> user_service,
+                     CrudService<Long, Prietenie> friendship_service,
+                     CommunityService community_service) {
+        this.user_service = user_service;
+        this.friendship_service = friendship_service;
+        this.community_service = community_service;
+        userUI = new UserUI((UserCrudService) user_service);
+        friendshipUI = new FriendshipUI((FriendshipCrudService) friendship_service);
+        communitiesUI = new CommunitiesUI(community_service);
     }
 
     private void printMenu() {
