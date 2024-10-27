@@ -27,13 +27,20 @@ public class PrietenieRepository extends AbstractFileRepository<Long, Prietenie>
 
     @Override
     public Optional<Prietenie> save(Prietenie entity) {
-        for(Prietenie p: entities.values()){
+//        for(Prietenie p: entities.values()){
+//            // verifica daca exista deja prietenia (1, 2) = (2, 1)
+//            if ((p.getUser1Id() == entity.getUser1Id() && p.getUser2Id() == entity.getUser2Id()) ||
+//                    (p.getUser1Id() == entity.getUser2Id() && p.getUser2Id() == entity.getUser1Id())) {
+//                throw new IllegalArgumentException("Prietenia deja exista");
+//            }
+//        }
+        entities.values().forEach(p -> {
             // verifica daca exista deja prietenia (1, 2) = (2, 1)
             if ((p.getUser1Id() == entity.getUser1Id() && p.getUser2Id() == entity.getUser2Id()) ||
                     (p.getUser1Id() == entity.getUser2Id() && p.getUser2Id() == entity.getUser1Id())) {
                 throw new IllegalArgumentException("Prietenia deja exista");
             }
-        }
+        });
 
         return super.save(entity);
     }

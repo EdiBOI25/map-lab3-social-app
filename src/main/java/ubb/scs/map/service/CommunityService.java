@@ -18,7 +18,6 @@ public class CommunityService {
         this.repo_friendship = repo_friendship;
     }
 
-    // TODO: Adauga functiile de calcul pt comunitati
     public int numberOfCommunities() {
         FriendshipGraph friendshipGraph = new FriendshipGraph(repo_friendship.findAll());
         return friendshipGraph.numberOfCommunities();

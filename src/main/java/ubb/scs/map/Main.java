@@ -38,11 +38,11 @@ public class Main {
         friendships.add(new Prietenie(7L, 8L));
         friendships.add(new Prietenie(7L, 9L));
 
-        int i = 1;
-        for(Prietenie f : friendships) {
-            f.setId((long) i);
-            ++i;
-        }
+        final long[] id = {1};
+        friendships.forEach(f -> {
+            f.setId(id[0]);
+            id[0]++;
+        });
 
         return friendships;
     }
