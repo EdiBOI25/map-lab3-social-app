@@ -4,6 +4,8 @@ import ubb.scs.map.domain.Prietenie;
 import ubb.scs.map.domain.Utilizator;
 import ubb.scs.map.repository.Repository;
 
+import java.util.Optional;
+
 public class PrietenieValidator implements Validator<Prietenie> {
     private Repository<Long, Utilizator> userRepo;
 
@@ -18,9 +20,9 @@ public class PrietenieValidator implements Validator<Prietenie> {
         if(user1Id == user2Id)
             throw new ValidationException("Prietenia nu este valida (user1Id == user2Id)");
 
-        Utilizator user1 = userRepo.findOne(user1Id);
-        Utilizator user2 = userRepo.findOne(user2Id);
-        if (user1 == null || user2 == null)
+        Optional<Utilizator> user1 = userRepo.findOne(user1Id);
+        Optional<Utilizator> user2 = userRepo.findOne(user2Id);
+        if (user1.isEmpty() || user2.isEmpty())
             throw new ValidationException("Prietenia nu este valida (user1 sau user2 nu exista)");
     }
 }

@@ -8,6 +8,7 @@ import ubb.scs.map.repository.Repository;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class InMemoryRepository<ID, E extends Entity<ID>> implements Repository<ID,E> {
 
@@ -20,12 +21,12 @@ public class InMemoryRepository<ID, E extends Entity<ID>> implements Repository<
     }
 
     @Override
-    public E findOne(ID id) {
+    public Optional<E> findOne(ID id) {
         for (ID key: entities.keySet()){
             if(key.equals(id))
-                return entities.get(key);
+                return Optional.ofNullable(entities.get(key));
         }
-        return null;
+        return Optional.empty();
     }
 
     @Override
@@ -37,7 +38,7 @@ public class InMemoryRepository<ID, E extends Entity<ID>> implements Repository<
     }
 
     @Override
-    public E save(E entity) throws ValidationException {
+    public Optional<E> save(E entity) throws ValidationException {
 
         /**
          *
@@ -55,29 +56,29 @@ public class InMemoryRepository<ID, E extends Entity<ID>> implements Repository<
             throw new IllegalArgumentException("ENTITY CANNOT BE NULL");
         validator.validate(entity);
         if(entities.containsKey(entity.getId()))
-            return entity;
+            return Optional.of(entity);
         else{
             entities.put(entity.getId(),entity);
-            return null;
+            return Optional.empty();
         }
 
 
     }
 
     @Override
-    public E delete(ID id) {
+    public Optional<E> delete(ID id) {
         for (ID key: entities.keySet()){
             if(key.equals(id)){
                 E entity=entities.get(key);
                 entities.remove(key);
-                return entity;
+                return Optional.ofNullable(entity);
             }
         }
-        return null;
+        return Optional.empty();
     }
 
     @Override
-    public E update(E entity) {
-        return null;
+    public Optional<E> update(E entity) {
+        return Optional.empty();
     }
 }

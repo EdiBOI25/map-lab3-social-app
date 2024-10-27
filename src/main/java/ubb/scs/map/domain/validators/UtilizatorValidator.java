@@ -7,9 +7,9 @@ public class UtilizatorValidator implements Validator<Utilizator> {
     @Override
     public void validate(Utilizator entity) throws ValidationException {
         //TODO: implement method validate
-        if(entity.getFirstName().equals(""))
+        if(entity.getFirstName().isEmpty())
             throw new ValidationException("Utilizatorul nu este valid (nu are prenume)");
-        if(entity.getLastName().equals(""))
+        if(entity.getLastName().isEmpty())
             throw new ValidationException("Utilizatorul nu este valid (nu are nume de familie");
     }
 }

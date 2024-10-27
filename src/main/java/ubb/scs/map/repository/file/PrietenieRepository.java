@@ -3,6 +3,8 @@ package ubb.scs.map.repository.file;
 import ubb.scs.map.domain.Prietenie;
 import ubb.scs.map.domain.validators.Validator;
 
+import java.util.Optional;
+
 public class PrietenieRepository extends AbstractFileRepository<Long, Prietenie>{
     public PrietenieRepository(Validator<Prietenie> validator, String fileName) {
         super(validator, fileName);
@@ -24,7 +26,7 @@ public class PrietenieRepository extends AbstractFileRepository<Long, Prietenie>
     }
 
     @Override
-    public Prietenie save(Prietenie entity) {
+    public Optional<Prietenie> save(Prietenie entity) {
         for(Prietenie p: entities.values()){
             // verifica daca exista deja prietenia (1, 2) = (2, 1)
             if ((p.getUser1Id() == entity.getUser1Id() && p.getUser2Id() == entity.getUser2Id()) ||

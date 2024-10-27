@@ -7,6 +7,7 @@ import ubb.scs.map.repository.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class CommunityService {
     private Repository<Long, Utilizator> repo_user;
@@ -28,7 +29,8 @@ public class CommunityService {
         var list = friendshipGraph.largestConnectedComponent();
         List<String> users = new ArrayList<>();
         for(Long id: list) {
-            users.add(repo_user.findOne(id).getFirstName() + " " + repo_user.findOne(id).getLastName());
+            Optional<Utilizator> u = repo_user.findOne(id);
+            u.ifPresent(utilizator -> users.add(utilizator.getFirstName() + " " + utilizator.getLastName()));
         }
 
         return users;

@@ -7,6 +7,7 @@ import ubb.scs.map.repository.memory.InMemoryRepository;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Optional;
 
 public abstract class AbstractFileRepository<ID, E extends Entity<ID>> extends InMemoryRepository<ID, E>{
     private String filename;
@@ -20,7 +21,7 @@ public abstract class AbstractFileRepository<ID, E extends Entity<ID>> extends I
     public abstract E createEntity(String line);
     public abstract String saveEntity(E entity);
     @Override
-    public E findOne(ID id) {
+    public Optional<E> findOne(ID id) {
         return super.findOne(id);
     }
 
@@ -30,9 +31,9 @@ public abstract class AbstractFileRepository<ID, E extends Entity<ID>> extends I
     }
 
     @Override
-    public E save(E entity) {
-        E e = super.save(entity);
-        if (e == null)
+    public Optional<E> save(E entity) {
+        Optional<E> e = super.save(entity);
+        if (e.isEmpty())
             writeToFile();
         return e;
     }
@@ -52,17 +53,17 @@ public abstract class AbstractFileRepository<ID, E extends Entity<ID>> extends I
     }
 
     @Override
-    public E delete(ID id) {
-        E e = super.delete(id);
-        if (e == null)
-            return null;
+    public Optional<E> delete(ID id) {
+        Optional<E> e = super.delete(id);
+        if (e.isEmpty())
+            return Optional.empty();
         writeToFile();
         return e;
     }
 
     @Override
-    public E update(E entity) {
-        return null;
+    public Optional<E> update(E entity) {
+        return Optional.empty();
     }
 
     public abstract ID getAvaliableId();
