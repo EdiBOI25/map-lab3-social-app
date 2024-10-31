@@ -54,8 +54,7 @@ public class CommunitiesUI {
 
     private void printBiggestCommunity() {
         try {
-            final var list = service.biggestCommunity();
-            list.forEach(System.out::println);
+            service.biggestCommunity().forEach(System.out::println);
             System.out.println();
         } catch (Exception e) {
             System.out.println("Nu exista. " + e.getMessage());
