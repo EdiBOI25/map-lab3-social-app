@@ -34,13 +34,14 @@ public class PrietenieRepository extends AbstractFileRepository<Long, Prietenie>
 //                throw new IllegalArgumentException("Prietenia deja exista");
 //            }
 //        }
-        entities.values().forEach(p -> {
-            // verifica daca exista deja prietenia (1, 2) = (2, 1)
-            if ((p.getUser1Id() == entity.getUser1Id() && p.getUser2Id() == entity.getUser2Id()) ||
-                    (p.getUser1Id() == entity.getUser2Id() && p.getUser2Id() == entity.getUser1Id())) {
-                throw new IllegalArgumentException("Prietenia deja exista");
-            }
-        });
+        entities.values().stream()
+                .filter(p -> (p.getUser1Id() == entity.getUser1Id() && p.getUser2Id() == entity.getUser2Id()) ||
+                        (p.getUser1Id() == entity.getUser2Id() && p.getUser2Id() == entity.getUser1Id())
+                )
+                .findAny()
+                .ifPresent(p -> {
+                    throw new IllegalArgumentException("Prietenia deja exista");
+                });
 
         return super.save(entity);
     }

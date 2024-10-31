@@ -6,6 +6,7 @@ import ubb.scs.map.domain.validators.ValidationException;
 import ubb.scs.map.domain.validators.Validator;
 import ubb.scs.map.repository.Repository;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -22,19 +23,15 @@ public class InMemoryRepository<ID, E extends Entity<ID>> implements Repository<
 
     @Override
     public Optional<E> findOne(ID id) {
-        for (ID key: entities.keySet()){
-            if(key.equals(id))
-                return Optional.ofNullable(entities.get(key));
-        }
-        return Optional.empty();
+        return entities.keySet().stream()
+                .filter(key -> key.equals(id))
+                .findFirst()
+                .map(entities::get);
     }
 
     @Override
     public Iterable<E> findAll() {
-        for (ID key: entities.keySet()){
-            return entities.values();
-        }
-        return null;
+        return new ArrayList<>(entities.values());
     }
 
     @Override
@@ -57,24 +54,22 @@ public class InMemoryRepository<ID, E extends Entity<ID>> implements Repository<
         validator.validate(entity);
         if(entities.containsKey(entity.getId()))
             return Optional.of(entity);
-        else{
-            entities.put(entity.getId(),entity);
-            return Optional.empty();
-        }
+        entities.put(entity.getId(),entity);
+        return Optional.empty();
 
 
     }
 
     @Override
     public Optional<E> delete(ID id) {
-        for (ID key: entities.keySet()){
-            if(key.equals(id)){
-                E entity=entities.get(key);
-                entities.remove(key);
-                return Optional.ofNullable(entity);
-            }
-        }
-        return Optional.empty();
+        return entities.keySet().stream()
+                .filter(key -> key.equals(id))
+                .findFirst()
+                .map(key -> {
+                    E entity = entities.get(key);
+                    entities.remove(key);
+                    return entity;
+                });
     }
 
     @Override
