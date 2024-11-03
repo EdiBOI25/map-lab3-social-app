@@ -6,6 +6,7 @@ import ubb.scs.map.domain.Utilizator;
 import ubb.scs.map.domain.validators.PrietenieValidator;
 import ubb.scs.map.domain.validators.UtilizatorValidator;
 import ubb.scs.map.repository.Repository;
+import ubb.scs.map.repository.database.UtilizatorDbRepository;
 import ubb.scs.map.repository.file.PrietenieRepository;
 import ubb.scs.map.repository.file.UtilizatorRepository;
 import ubb.scs.map.service.*;
@@ -48,53 +49,42 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        Repository<Long, Utilizator> repo_users = new UtilizatorRepository(
-                new UtilizatorValidator(),
-                "./data/utilizatori.txt"
-        );
-        Repository<Long, Prietenie> repo_friendships = new PrietenieRepository(
-                new PrietenieValidator(repo_users),
-                "./data/prietenii.txt"
-        );
+        String username="postgres";
+        String password="2501";
+        String url="jdbc:postgresql://localhost:5432/map-social-network";
+        Repository<Long,Utilizator> userFileRepository =
+                new UtilizatorDbRepository(url,username, password,  new UtilizatorValidator());
 
-        var users = generateUsers();
-        for(Utilizator u: users) {
-            repo_users.save(u);
-        }
-        var friendships = generateFriends();
-        for(Prietenie p: friendships) {
-            repo_friendships.save(p);
-        }
-
-        CrudService<Long, Utilizator> user_service = new UserCrudService(repo_users);
-        CrudService<Long, Prietenie> friendship_service = new FriendshipCrudService(repo_friendships);
-        CommunityService community_service = new CommunityService(repo_users, repo_friendships);
-
-        ConsoleUI consoleUI = new ConsoleUI(user_service, friendship_service, community_service);
-        consoleUI.run();
+        // userFileRepository3.save(new Utilizator("XXY", "YYY"));
+        userFileRepository.findAll().forEach(System.out::println);
+//        Iterable<Utilizator> users = userFileRepository3.findAll();
 
 
-
-
-//        Repository<Long, Utilizator> repo = new InMemoryRepository<Long, Utilizator>(new UtilizatorValidator());
-//        Repository<Long, Utilizator> repoFile = new UtilizatorRepository(new UtilizatorValidator(), "./data/utilizatori.txt");
-//        Utilizator u1 = new Utilizator("IONUT", "a");
-//        Utilizator u2 = new Utilizator("Mihai", "b");
-//        Utilizator u3 = null;
-//        u1.setId(1L);
-//        u2.setId(2L);
-//        try {
-//            repoFile.save(u1);
-//            repoFile.save(u2);
-//            repoFile.save(u3);
-//        }catch(IllegalArgumentException e)
-//        {
-//            System.out.println(e.getMessage());
-//        }catch(ValidationException e)
-//        {
-//            System.out.println(e.getMessage());
+//        Repository<Long, Utilizator> repo_users = new UtilizatorRepository(
+//                new UtilizatorValidator(),
+//                "./data/utilizatori.txt"
+//        );
+//        Repository<Long, Prietenie> repo_friendships = new PrietenieRepository(
+//                new PrietenieValidator(repo_users),
+//                "./data/prietenii.txt"
+//        );
+//
+//        var users = generateUsers();
+//        for(Utilizator u: users) {
+//            repo_users.save(u);
 //        }
-//        System.out.println();
+//        var friendships = generateFriends();
+//        for(Prietenie p: friendships) {
+//            repo_friendships.save(p);
+//        }
+//
+//        CrudService<Long, Utilizator> user_service = new UserCrudService(repo_users);
+//        CrudService<Long, Prietenie> friendship_service = new FriendshipCrudService(repo_friendships);
+//        CommunityService community_service = new CommunityService(repo_users, repo_friendships);
+//
+//        ConsoleUI consoleUI = new ConsoleUI(user_service, friendship_service, community_service);
+//        consoleUI.run();
+
 
     }
 }
