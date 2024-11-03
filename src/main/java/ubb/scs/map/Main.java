@@ -6,6 +6,7 @@ import ubb.scs.map.domain.Utilizator;
 import ubb.scs.map.domain.validators.PrietenieValidator;
 import ubb.scs.map.domain.validators.UtilizatorValidator;
 import ubb.scs.map.repository.Repository;
+import ubb.scs.map.repository.database.PrietenieDbRepository;
 import ubb.scs.map.repository.database.UtilizatorDbRepository;
 import ubb.scs.map.repository.file.PrietenieRepository;
 import ubb.scs.map.repository.file.UtilizatorRepository;
@@ -52,11 +53,19 @@ public class Main {
         String username="postgres";
         String password="2501";
         String url="jdbc:postgresql://localhost:5432/map-social-network";
-        Repository<Long,Utilizator> userFileRepository =
+        Repository<Long,Utilizator> user_repo =
                 new UtilizatorDbRepository(url,username, password,  new UtilizatorValidator());
+        Repository<Long, Prietenie> friendship_repo =
+                new PrietenieDbRepository(url,username, password, new PrietenieValidator(user_repo));
+        UserCrudService user_service = new UserCrudService(user_repo);
+        FriendshipCrudService friendship_service = new FriendshipCrudService(friendship_repo);
+        CommunityService community_service = new CommunityService(user_repo, friendship_repo);
+        ConsoleUI consoleUI = new ConsoleUI(user_service, friendship_service, community_service);
+        consoleUI.run();
+
 
         // userFileRepository3.save(new Utilizator("XXY", "YYY"));
-        userFileRepository.findAll().forEach(System.out::println);
+//        user_repo.findAll().forEach(System.out::println);
 //        Iterable<Utilizator> users = userFileRepository3.findAll();
 
 
