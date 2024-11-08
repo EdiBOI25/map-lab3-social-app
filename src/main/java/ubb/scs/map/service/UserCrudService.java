@@ -11,9 +11,7 @@ public class UserCrudService extends AbstractCrudService<Long, Utilizator> {
 
     public Utilizator add(String first_name, String last_name) {
         Utilizator u = new Utilizator(first_name, last_name);
-        UtilizatorRepository repo = (UtilizatorRepository) super.repository;
-        long id = repo.getAvaliableId();
-        u.setId(id);
+        u.setId(1L);
         return super.add(u);
     }
 }

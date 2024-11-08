@@ -71,7 +71,7 @@ public class PrietenieDbRepository implements Repository<Long, Prietenie> {
     public Optional<Prietenie> save(Prietenie entity) {
         int rez = -1;
         try (Connection connection = DriverManager.getConnection(url, username, password);
-             PreparedStatement statement = connection.prepareStatement("INSERT INTO friendship (user_id1, user_id2) VALUES (?, ?)");
+             PreparedStatement statement = connection.prepareStatement("INSERT INTO friendship (user1_id, user2_id) VALUES (?, ?)");
              ) {
             statement.setLong(1, entity.getUser1Id());
             statement.setLong(2, entity.getUser2Id());

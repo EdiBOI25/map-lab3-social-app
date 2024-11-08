@@ -11,9 +11,7 @@ public class FriendshipCrudService extends AbstractCrudService<Long, Prietenie> 
 
     public Prietenie add(long id1, long id2) {
         Prietenie p = new Prietenie(id1, id2);
-        PrietenieRepository repo = (PrietenieRepository) super.repository;
-        long id = repo.getAvaliableId();
-        p.setId(id);
+        p.setId(1L);
         return super.add(p);
     }
 }
