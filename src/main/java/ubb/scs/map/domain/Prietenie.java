@@ -1,31 +1,25 @@
 package ubb.scs.map.domain;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
 public class Prietenie extends Entity<Long> {
-    private long userId1;
-    private long userId2;
+    private long user1_id;
+    private long user2_id;
     private LocalDate friendsFrom;
 
-    public Prietenie(long userId1, long userId2, LocalDate friendsFrom) {
-        this.userId1 = userId1;
-        this.userId2 = userId2;
+    public Prietenie(long user1_id, long user2_id, LocalDate friendsFrom) {
+        this.user1_id = user1_id;
+        this.user2_id = user2_id;
         this.friendsFrom = friendsFrom;
-        if (userId1 > userId2) { // sa fie mereu in ordine crescatoare
-            this.userId1 = userId2;
-            this.userId2 = userId1;
-        }
     }
 
     public long getUser1Id() {
-        return userId1;
+        return user1_id;
     }
 
     public long getUser2Id() {
-        return userId2;
+        return user2_id;
     }
 
     public LocalDate getDate() {
@@ -39,8 +33,8 @@ public class Prietenie extends Entity<Long> {
     @Override
     public String toString() {
         return "Prietenie{" +
-                "user1=" + userId1 +
-                ", user2=" + userId2 +
+                "user1=" + user1_id +
+                ", user2=" + user2_id +
                 ", friendsFrom=" + friendsFrom +
                 '}';
     }
@@ -49,11 +43,11 @@ public class Prietenie extends Entity<Long> {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Prietenie)) return false;
-        return userId1 == ((Prietenie) o).userId1 && userId2 == ((Prietenie) o).userId2;
+        return user1_id == ((Prietenie) o).user1_id && user2_id == ((Prietenie) o).user2_id;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userId1, userId2);
+        return Objects.hash(user1_id, user2_id);
     }
 }

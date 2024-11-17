@@ -6,8 +6,10 @@ import ubb.scs.map.domain.Utilizator;
 import ubb.scs.map.domain.validators.PrietenieValidator;
 import ubb.scs.map.domain.validators.UtilizatorValidator;
 import ubb.scs.map.repository.Repository;
+import ubb.scs.map.repository.database.FriendRequestDbRepository;
 import ubb.scs.map.repository.database.PrietenieDbRepository;
 import ubb.scs.map.repository.database.UtilizatorDbRepository;
+import ubb.scs.map.service_v2.PrietenieService;
 import ubb.scs.map.service_v2.UtilizatorService;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -16,6 +18,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.time.LocalDate;
 
 //public class HelloApplication extends Application {
 //    @Override
@@ -36,6 +39,7 @@ public class HelloApplication extends Application {
 
     Repository<Long, Utilizator> utilizatorRepository;
     UtilizatorService service;
+    PrietenieService service_friendship;
 
     public static void main(String[] args) {
         launch(args);
@@ -53,14 +57,18 @@ public class HelloApplication extends Application {
         String username="postgres";
         String password="2501";
         String url="jdbc:postgresql://localhost:5432/map-social-network";
+
         Repository<Long, Utilizator> utilizatorRepository =
                 new UtilizatorDbRepository(url,username, password,  new UtilizatorValidator());
 
-//        utilizatorRepository.findAll().forEach(x-> System.out.println(x));
         Repository<Long, Prietenie> prietenieRepository =
                 new PrietenieDbRepository(url, username, password, new PrietenieValidator(utilizatorRepository));
-        prietenieRepository.findAll().forEach(System.out::println);
+
+        Repository<Long, Prietenie> friendRequestRepository =
+                new FriendRequestDbRepository(url, username, password, new PrietenieValidator(utilizatorRepository));
+
         service =new UtilizatorService(utilizatorRepository);
+        service_friendship = new PrietenieService(prietenieRepository, friendRequestRepository, utilizatorRepository);
         initView(primaryStage);
         primaryStage.setWidth(800);
         primaryStage.show();
@@ -79,6 +87,6 @@ public class HelloApplication extends Application {
 
         UtilizatorController userController = fxmlLoader.getController();
         userController.setUtilizatorService(service);
-
+        userController.setPrietenieService(service_friendship);
     }
 }

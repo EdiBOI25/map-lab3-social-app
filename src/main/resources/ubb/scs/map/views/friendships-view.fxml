@@ -9,13 +9,13 @@
 <?import javafx.scene.layout.HBox?>
 
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="478.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="478.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ubb.scs.map.controller.ManageFriendsController">
    <children>
       <SplitPane dividerPositions="0.7659395973154363" layoutX="-2.0" orientation="VERTICAL" prefHeight="478.0" prefWidth="600.0">
         <items>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="302.0" prefWidth="564.0">
                <children>
-                  <TableView fx:id="tableFriendshipsVeiw" prefHeight="302.0" prefWidth="598.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <TableView fx:id="tableFriendshipsView" prefHeight="302.0" prefWidth="598.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <columns>
                       <TableColumn fx:id="tableColumnFriendName" prefWidth="299.2000305056572" text="Friend" />
                       <TableColumn fx:id="tableColumnFriendsFrom" minWidth="2.4000244140625" prefWidth="300.7999572753906" text="Friends from" />
@@ -27,9 +27,9 @@
                <children>
                   <HBox alignment="CENTER" prefHeight="109.0" prefWidth="598.0" spacing="20.0">
                      <children>
-                        <Button mnemonicParsing="false" text="Add Friend" />
+                        <Button mnemonicParsing="false" text="Send Request" />
                         <Button mnemonicParsing="false" text="Unfriend" />
-                        <Button mnemonicParsing="false" text="Requests" />
+                        <Button mnemonicParsing="false" text="Incoming Requests" />
                      </children>
                      <opaqueInsets>
                         <Insets />

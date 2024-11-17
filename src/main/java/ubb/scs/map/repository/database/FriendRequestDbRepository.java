@@ -2,7 +2,6 @@ package ubb.scs.map.repository.database;
 
 
 import ubb.scs.map.domain.Prietenie;
-import ubb.scs.map.domain.Utilizator;
 import ubb.scs.map.domain.validators.Validator;
 import ubb.scs.map.repository.Repository;
 
@@ -12,13 +11,13 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-public class PrietenieDbRepository implements Repository<Long, Prietenie> {
+public class FriendRequestDbRepository implements Repository<Long, Prietenie> {
     private String url;
     private String username;
     private String password;
     private Validator<Prietenie> validator;
 
-    public PrietenieDbRepository(String url, String username, String password, Validator<Prietenie> validator) {
+    public FriendRequestDbRepository(String url, String username, String password, Validator<Prietenie> validator) {
         this.url = url;
         this.username = username;
         this.password = password;
@@ -26,7 +25,7 @@ public class PrietenieDbRepository implements Repository<Long, Prietenie> {
     }
     @Override
     public Optional<Prietenie> findOne(Long aLong) {
-        String sql = "SELECT * FROM friendship WHERE id = ?";
+        String sql = "SELECT * FROM friend_requests WHERE id = ?";
         try (Connection connection = DriverManager.getConnection(url, username, password);
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setLong(1, aLong);
@@ -34,9 +33,9 @@ public class PrietenieDbRepository implements Repository<Long, Prietenie> {
 
             if (resultSet.next()) {
                 Long id = resultSet.getLong("id");
-                Long user1_id = resultSet.getLong("user1_id");
-                Long user2_id = resultSet.getLong("user2_id");
-                LocalDate date = resultSet.getDate("friends_from").toLocalDate();
+                long user1_id = resultSet.getLong("requester_id");
+                long user2_id = resultSet.getLong("recipient_id");
+                LocalDate date = resultSet.getDate("request_date").toLocalDate();
                 Prietenie p = new Prietenie(user1_id, user2_id, date);
                 p.setId(id);
                 return Optional.of(p);
@@ -51,37 +50,14 @@ public class PrietenieDbRepository implements Repository<Long, Prietenie> {
     public Iterable<Prietenie> findAll() {
         Set<Prietenie> friendships = new HashSet<>();
         try (Connection connection = DriverManager.getConnection(url, username, password);
-            PreparedStatement statement = connection.prepareStatement("SELECT * from friendship");
+            PreparedStatement statement = connection.prepareStatement("SELECT * from friend_requests");
              ResultSet resultSet = statement.executeQuery()) {
 
             while (resultSet.next()) {
                 Long id = resultSet.getLong("id");
-                long user1_id = resultSet.getLong("user1_id");
-                long user2_id = resultSet.getLong("user2_id");
-                LocalDate date = resultSet.getDate("friends_from").toLocalDate();
-                Prietenie p = new Prietenie(user1_id, user2_id, date);
-                p.setId(id);
-                friendships.add(p);
-            }
-            return friendships;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return friendships;
-    }
-
-    public Iterable<Prietenie> findFriendsOfUser(Long aLong) {
-        Set<Prietenie> friendships = new HashSet<>();
-        String sql_query = "SELECT * from friendship WHERE user1_id = ? OR user2_id = ?";
-        try (Connection connection = DriverManager.getConnection(url, username, password);
-             PreparedStatement statement = connection.prepareStatement(sql_query)) {
-            statement.setLong(1, aLong);
-            ResultSet resultSet = statement.executeQuery();
-            while (resultSet.next()) {
-                Long id = resultSet.getLong("id");
-                long user1_id = resultSet.getLong("user1_id");
-                long user2_id = resultSet.getLong("user2_id");
-                LocalDate date = resultSet.getDate("friends_from").toLocalDate();
+                long user1_id = resultSet.getLong("requester_id");
+                long user2_id = resultSet.getLong("recipient_id");
+                LocalDate date = resultSet.getDate("request_date").toLocalDate();
                 Prietenie p = new Prietenie(user1_id, user2_id, date);
                 p.setId(id);
                 friendships.add(p);
@@ -97,7 +73,7 @@ public class PrietenieDbRepository implements Repository<Long, Prietenie> {
     public Optional<Prietenie> save(Prietenie entity) {
         int rez = -1;
         try (Connection connection = DriverManager.getConnection(url, username, password);
-             PreparedStatement statement = connection.prepareStatement("INSERT INTO friendship (user1_id, user2_id, friends_from) VALUES (?, ?, ?)");
+             PreparedStatement statement = connection.prepareStatement("INSERT INTO friend_requests (requester_id, recipient_id, request_date) VALUES (?, ?, ?)");
              ) {
             long user1_id = entity.getUser1Id();
             long user2_id = entity.getUser2Id();
@@ -127,7 +103,7 @@ public class PrietenieDbRepository implements Repository<Long, Prietenie> {
 
         int rez = -1;
         try (Connection connection = DriverManager.getConnection(url, username, password);
-             PreparedStatement statement = connection.prepareStatement("DELETE FROM friendship WHERE id = ?");
+             PreparedStatement statement = connection.prepareStatement("DELETE FROM friend_requests WHERE id = ?");
         ) {
             statement.setLong(1, aLong);
             rez = statement.executeUpdate();

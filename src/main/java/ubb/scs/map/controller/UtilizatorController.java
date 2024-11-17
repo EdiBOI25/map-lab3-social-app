@@ -2,6 +2,7 @@ package ubb.scs.map.controller;
 
 import javafx.scene.image.ImageView;
 import ubb.scs.map.domain.Utilizator;
+import ubb.scs.map.service_v2.PrietenieService;
 import ubb.scs.map.service_v2.UtilizatorService;
 import ubb.scs.map.utils.events.UtilizatorEntityChangeEvent;
 import ubb.scs.map.utils.observer.Observer;
@@ -28,6 +29,7 @@ import java.util.stream.StreamSupport;
 
 public class UtilizatorController implements Observer<UtilizatorEntityChangeEvent> {
     UtilizatorService service;
+    PrietenieService service_friendship;
     ObservableList<Utilizator> model = FXCollections.observableArrayList();
 
 
@@ -45,6 +47,10 @@ public class UtilizatorController implements Observer<UtilizatorEntityChangeEven
         this.service = service;
         service.addObserver(this);
         initModel();
+    }
+
+    public void setPrietenieService(PrietenieService service) {
+        this.service_friendship = service;
     }
 
     @FXML
@@ -127,7 +133,15 @@ public class UtilizatorController implements Observer<UtilizatorEntityChangeEven
         }
     }
 
-    public void handleManageFriends() {
+    public void handleManageFriends(ActionEvent actionEvent) {
+        Utilizator selected = tableView.getSelectionModel().getSelectedItem();
+        if (selected != null) {
+            showManageFriendsWindow(selected);
+        } else
+            MessageAlert.showErrorMessage(null, "NU ati selectat nici un student");
+    }
+
+    private void showManageFriendsWindow(Utilizator user) {
         try {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource("../views/friendships-view.fxml"));
@@ -137,8 +151,8 @@ public class UtilizatorController implements Observer<UtilizatorEntityChangeEven
             dialogStage.initModality(Modality.WINDOW_MODAL);
             Scene scene = new Scene(root);
             dialogStage.setScene(scene);
-//            ManageFriendsController manageFriendsController = loader.getController();
-//            manageFriendsController.setService(service, dialogStage);
+            ManageFriendsController manageFriendsController = loader.getController();
+            manageFriendsController.setPrietenieService(service_friendship, dialogStage, user);
             dialogStage.show();
         } catch (IOException e) {
             e.printStackTrace();
