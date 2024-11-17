@@ -50,18 +50,20 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        String username="postgres";
-        String password="2501";
-        String url="jdbc:postgresql://localhost:5432/map-social-network";
-        Repository<Long,Utilizator> user_repo =
-                new UtilizatorDbRepository(url,username, password,  new UtilizatorValidator());
-        Repository<Long, Prietenie> friendship_repo =
-                new PrietenieDbRepository(url,username, password, new PrietenieValidator(user_repo));
-        UserCrudService user_service = new UserCrudService(user_repo);
-        FriendshipCrudService friendship_service = new FriendshipCrudService(friendship_repo);
-        CommunityService community_service = new CommunityService(user_repo, friendship_repo);
-        ConsoleUI consoleUI = new ConsoleUI(user_service, friendship_service, community_service);
-        consoleUI.run();
+        HelloApplication.main(args);
+
+//        String username="postgres";
+//        String password="2501";
+//        String url="jdbc:postgresql://localhost:5432/map-social-network";
+//        Repository<Long,Utilizator> user_repo =
+//                new UtilizatorDbRepository(url,username, password,  new UtilizatorValidator());
+//        Repository<Long, Prietenie> friendship_repo =
+//                new PrietenieDbRepository(url,username, password, new PrietenieValidator(user_repo));
+//        UserCrudService user_service = new UserCrudService(user_repo);
+//        FriendshipCrudService friendship_service = new FriendshipCrudService(friendship_repo);
+//        CommunityService community_service = new CommunityService(user_repo, friendship_repo);
+//        ConsoleUI consoleUI = new ConsoleUI(user_service, friendship_service, community_service);
+//        consoleUI.run();
 
 
         // userFileRepository3.save(new Utilizator("XXY", "YYY"));

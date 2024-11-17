@@ -114,7 +114,22 @@ public class UtilizatorDbRepository implements Repository<Long, Utilizator> {
     }
 
     @Override
-    public Optional<Utilizator> update(Utilizator entity) {
+    public Optional<Utilizator> update(Utilizator user) {
+        if(user == null)
+            throw new IllegalArgumentException("entity must be not null!");
+        validator.validate(user);
+        String sql = "update users set first_name = ?, last_name = ? where id = ?";
+        try (Connection connection = DriverManager.getConnection(url, username, password);
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1,user.getFirstName());
+            ps.setString(2, user.getLastName());
+            ps.setLong(3, user.getId());
+            if( ps.executeUpdate() > 0 )
+                return Optional.empty();
+            return Optional.ofNullable(user);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return Optional.empty();
     }
 }
