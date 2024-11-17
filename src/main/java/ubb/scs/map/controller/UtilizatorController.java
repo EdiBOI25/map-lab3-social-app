@@ -126,4 +126,22 @@ public class UtilizatorController implements Observer<UtilizatorEntityChangeEven
             System.out.println("Desktop is not supported. Cannot open link.");
         }
     }
+
+    public void handleManageFriends() {
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("../views/friendships-view.fxml"));
+            AnchorPane root = (AnchorPane) loader.load();
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Manage Friends");
+            dialogStage.initModality(Modality.WINDOW_MODAL);
+            Scene scene = new Scene(root);
+            dialogStage.setScene(scene);
+//            ManageFriendsController manageFriendsController = loader.getController();
+//            manageFriendsController.setService(service, dialogStage);
+            dialogStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
