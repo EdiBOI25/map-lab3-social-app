@@ -3,6 +3,7 @@ package ubb.scs.map.repository.file;
 import ubb.scs.map.domain.Prietenie;
 import ubb.scs.map.domain.validators.Validator;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 public class PrietenieRepository extends AbstractFileRepository<Long, Prietenie>{
@@ -13,7 +14,7 @@ public class PrietenieRepository extends AbstractFileRepository<Long, Prietenie>
     @Override
     public Prietenie createEntity(String line) {
         String[] splited = line.split(";");
-        Prietenie p = new Prietenie(Long.parseLong(splited[1]), Long.parseLong(splited[2]));
+        Prietenie p = new Prietenie(Long.parseLong(splited[1]), Long.parseLong(splited[2]), LocalDate.parse(splited[3]));
         p.setId(Long.parseLong(splited[0]));
         return p;
     }

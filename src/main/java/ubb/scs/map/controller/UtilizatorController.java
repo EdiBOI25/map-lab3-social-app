@@ -1,5 +1,6 @@
 package ubb.scs.map.controller;
 
+import javafx.scene.image.ImageView;
 import ubb.scs.map.domain.Utilizator;
 import ubb.scs.map.service_v2.UtilizatorService;
 import ubb.scs.map.utils.events.UtilizatorEntityChangeEvent;
@@ -17,7 +18,10 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 
+import java.awt.*;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -33,6 +37,8 @@ public class UtilizatorController implements Observer<UtilizatorEntityChangeEven
     TableColumn<Utilizator,String> tableColumnFirstName;
     @FXML
     TableColumn<Utilizator,String> tableColumnLastName;
+    @FXML
+    ImageView coolDuckPhoto;
 
 
     public void setUtilizatorService(UtilizatorService service) {
@@ -61,7 +67,6 @@ public class UtilizatorController implements Observer<UtilizatorEntityChangeEven
     }
 
     public void handleAddUtilizator(ActionEvent actionEvent) {
-        // TODO: De completat functia de adaugare (cred ca relativ asemenea ca aia de la update)
         showMessageTaskEditDialog(null);
     }
 
@@ -75,7 +80,6 @@ public class UtilizatorController implements Observer<UtilizatorEntityChangeEven
     }
 
     public void handleUpdateUtilizator(ActionEvent actionEvent) {
-        // TODO
         Utilizator selected = tableView.getSelectionModel().getSelectedItem();
         if (selected != null) {
             showMessageTaskEditDialog(selected);
@@ -107,6 +111,19 @@ public class UtilizatorController implements Observer<UtilizatorEntityChangeEven
 
         } catch ( IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public void handleImageClick() {
+        String url = "https://media1.tenor.com/m/t7BdQNaZ_WYAAAAd/smoke-duck.gif";
+        if (Desktop.isDesktopSupported()) {
+            try {
+                Desktop.getDesktop().browse(new URI(url));
+            } catch (IOException | URISyntaxException e) {
+                e.printStackTrace();
+            }
+        } else {
+            System.out.println("Desktop is not supported. Cannot open link.");
         }
     }
 }

@@ -1,14 +1,19 @@
 package ubb.scs.map.domain;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
 public class Prietenie extends Entity<Long> {
     private long userId1;
     private long userId2;
+    private LocalDate friendsFrom;
 
-    public Prietenie(long userId1, long userId2) {
+    public Prietenie(long userId1, long userId2, LocalDate friendsFrom) {
         this.userId1 = userId1;
         this.userId2 = userId2;
+        this.friendsFrom = friendsFrom;
         if (userId1 > userId2) { // sa fie mereu in ordine crescatoare
             this.userId1 = userId2;
             this.userId2 = userId1;
@@ -23,11 +28,20 @@ public class Prietenie extends Entity<Long> {
         return userId2;
     }
 
+    public LocalDate getDate() {
+        return friendsFrom;
+    }
+
+    public void setDate(LocalDate date) {
+        friendsFrom = date;
+    }
+
     @Override
     public String toString() {
         return "Prietenie{" +
                 "user1=" + userId1 +
                 ", user2=" + userId2 +
+                ", friendsFrom=" + friendsFrom +
                 '}';
     }
 

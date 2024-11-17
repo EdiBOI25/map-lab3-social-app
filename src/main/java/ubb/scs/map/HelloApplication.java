@@ -1,9 +1,12 @@
 package ubb.scs.map;
 
 import ubb.scs.map.controller.UtilizatorController;
+import ubb.scs.map.domain.Prietenie;
 import ubb.scs.map.domain.Utilizator;
+import ubb.scs.map.domain.validators.PrietenieValidator;
 import ubb.scs.map.domain.validators.UtilizatorValidator;
 import ubb.scs.map.repository.Repository;
+import ubb.scs.map.repository.database.PrietenieDbRepository;
 import ubb.scs.map.repository.database.UtilizatorDbRepository;
 import ubb.scs.map.service_v2.UtilizatorService;
 import javafx.application.Application;
@@ -54,6 +57,9 @@ public class HelloApplication extends Application {
                 new UtilizatorDbRepository(url,username, password,  new UtilizatorValidator());
 
 //        utilizatorRepository.findAll().forEach(x-> System.out.println(x));
+        Repository<Long, Prietenie> prietenieRepository =
+                new PrietenieDbRepository(url, username, password, new PrietenieValidator(utilizatorRepository));
+        prietenieRepository.findAll().forEach(System.out::println);
         service =new UtilizatorService(utilizatorRepository);
         initView(primaryStage);
         primaryStage.setWidth(800);

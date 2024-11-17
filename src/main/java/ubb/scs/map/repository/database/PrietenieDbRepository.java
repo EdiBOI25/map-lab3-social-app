@@ -7,6 +7,7 @@ import ubb.scs.map.domain.validators.Validator;
 import ubb.scs.map.repository.Repository;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -35,7 +36,8 @@ public class PrietenieDbRepository implements Repository<Long, Prietenie> {
                 Long id = resultSet.getLong("id");
                 Long user1_id = resultSet.getLong("user1_id");
                 Long user2_id = resultSet.getLong("user2_id");
-                Prietenie p = new Prietenie(user1_id, user2_id);
+                LocalDate date = resultSet.getDate("friends_from").toLocalDate();
+                Prietenie p = new Prietenie(user1_id, user2_id, date);
                 p.setId(id);
                 return Optional.of(p);
             }
@@ -56,7 +58,8 @@ public class PrietenieDbRepository implements Repository<Long, Prietenie> {
                 Long id = resultSet.getLong("id");
                 long user1_id = resultSet.getLong("user1_id");
                 long user2_id = resultSet.getLong("user2_id");
-                Prietenie p = new Prietenie(user1_id, user2_id);
+                LocalDate date = resultSet.getDate("friends_from").toLocalDate();
+                Prietenie p = new Prietenie(user1_id, user2_id, date);
                 p.setId(id);
                 friendships.add(p);
             }

@@ -12,6 +12,7 @@ import ubb.scs.map.repository.file.PrietenieRepository;
 import ubb.scs.map.repository.file.UtilizatorRepository;
 import ubb.scs.map.service.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 
@@ -31,14 +32,14 @@ public class Main {
 
     static ArrayList<Prietenie> generateFriends() {
         ArrayList<Prietenie> friendships = new ArrayList<>();
-        friendships.add(new Prietenie(1L, 2L));
-        friendships.add(new Prietenie(1L, 3L));
-        friendships.add(new Prietenie(2L, 3L));
+        friendships.add(new Prietenie(1L, 2L, LocalDate.now()));
+        friendships.add(new Prietenie(1L, 3L, LocalDate.now()));
+        friendships.add(new Prietenie(2L, 3L, LocalDate.now()));
 //        friendships.add(new Prietenie(1L, 4L));
-        friendships.add(new Prietenie(4L, 5L));
-        friendships.add(new Prietenie(6L, 7L));
-        friendships.add(new Prietenie(7L, 8L));
-        friendships.add(new Prietenie(7L, 9L));
+        friendships.add(new Prietenie(4L, 5L, LocalDate.now()));
+        friendships.add(new Prietenie(6L, 7L, LocalDate.now()));
+        friendships.add(new Prietenie(7L, 8L, LocalDate.now()));
+        friendships.add(new Prietenie(7L, 9L, LocalDate.now()));
 
         final long[] id = {1};
         friendships.forEach(f -> {
