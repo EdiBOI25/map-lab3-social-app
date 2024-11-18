@@ -12,9 +12,10 @@ import ubb.scs.map.utils.observer.Observable;
 import ubb.scs.map.utils.observer.Observer;
 
 
-
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -33,28 +34,106 @@ public class PrietenieService implements Observable<PrietenieEntityChangeEvent> 
         this.repo_users = repo_users;
     }
 
-//    // TODO: sendRequest
-//    //  adauga in repo_requests o cerere de prietenie
-//    //  daca e deja, nu o adauga
-//    //  daca e invers (adica 2 trimite lui 1 dar 1 deja ii trimisese lui 2), atunci adauga in repo_friendship si sterge din requests
-//    public Prietenie addFriendRequest(Prietenie friend_request) {
-//
-//        if(repo.save(user).isEmpty()){
-//            UtilizatorEntityChangeEvent event = new UtilizatorEntityChangeEvent(ChangeEventType.ADD, user);
-//            notifyObservers(event);
-//            return null;
-//        }
-//        return user;
-//    }
-
-    // TODO: deleteFriendship + deleteRequest
-    public Prietenie deletePrietenie(Long id){
-        Optional<Prietenie> p =repo_friendship.delete(id);
-        if (p.isPresent()) {
-            notifyObservers(new PrietenieEntityChangeEvent(ChangeEventType.DELETE, p.get()));
-            return p.get();
+    public Prietenie addReuqestToDB(Prietenie friend_request) {
+        if (repo_requests.save(friend_request).isEmpty()){
+            PrietenieEntityChangeEvent event = new PrietenieEntityChangeEvent(ChangeEventType.ADD, friend_request);
+            notifyObservers(event);
+            System.out.println("added request" + friend_request);
+            return null;
         }
+        System.out.println("failed to add request" + friend_request);
+        return friend_request;
+    }
+
+    public Prietenie deleteRequestFromDB(Long id) {
+        Optional<Prietenie> f = repo_requests.delete(id);
+        if(f.isPresent()){
+            PrietenieEntityChangeEvent event = new PrietenieEntityChangeEvent(ChangeEventType.DELETE, f.get());
+            notifyObservers(event);
+            System.out.println("deleted request" + f.get());
+            return f.get();
+        }
+        System.out.println("failed to delete request" + id);
         return null;
+    }
+
+    public Prietenie addFriendshipToDB(Prietenie friendship) {
+        long user1_id = friendship.getUser1Id();
+        long user2_id = friendship.getUser2Id();
+        if (user1_id > user2_id) {
+            long aux = user1_id;
+            user1_id = user2_id;
+            user2_id = aux;
+        }
+        Prietenie new_friendship = new Prietenie(user1_id, user2_id, LocalDate.now());
+        new_friendship.setId(0L);
+        if (repo_friendship.save(new_friendship).isEmpty()){
+            PrietenieEntityChangeEvent event = new PrietenieEntityChangeEvent(ChangeEventType.ADD, new_friendship);
+            notifyObservers(event);
+            System.out.println("added friendship" + new_friendship);
+            return null;
+        }
+        System.out.println("failed to add friendship" + friendship);
+        return friendship;
+    }
+
+    public Prietenie deleteFriendshipFromDB(Long id) {
+        Optional<Prietenie> f = repo_friendship.delete(id);
+        if(f.isPresent()){
+            PrietenieEntityChangeEvent event = new PrietenieEntityChangeEvent(ChangeEventType.DELETE, f.get());
+            notifyObservers(event);
+            System.out.println("deleted friendship" + f.get());
+            return f.get();
+        }
+        System.out.println("failed to delete friendship" + id);
+        return null;
+    }
+
+    public Prietenie addFriendRequest(Prietenie friend_request) {
+        Iterable<Prietenie> all_requests = repo_requests.findAll();
+        List<Prietenie> requests = StreamSupport.stream(all_requests.spliterator(), false)
+                .collect(Collectors.toList());
+
+        // daca cererea e deja trimisa
+        if(requests.stream()
+                .anyMatch(x->x.getUser1Id() == friend_request.getUser1Id()
+                        && x.getUser2Id() == friend_request.getUser2Id())) {
+            // TODO: dialog confirmare ca deja a trimis
+            return friend_request;
+        }
+
+        // daca celalalt deja a trimis, se adauga prietenia noua
+        Prietenie reversed_request = requests.stream()
+                .filter(x->x.getUser1Id() == friend_request.getUser2Id()
+                        && x.getUser2Id() == friend_request.getUser1Id())
+                .findFirst()
+                .orElse(null);
+
+        if(reversed_request != null) {
+            // adauga in repo_friendship si sterge inversa din requests
+            if (addFriendshipToDB(friend_request) != null){
+                return friend_request;
+            }
+
+            if(deleteRequestFromDB(reversed_request.getId()) == null){
+                return friend_request;
+            }
+
+            // TODO: dialog confirmare ca deja a trimis alalalt si acum sunt prieteni
+            return null;
+        }
+
+        if(addReuqestToDB(friend_request) == null){
+            PrietenieEntityChangeEvent event = new PrietenieEntityChangeEvent(ChangeEventType.ADD, friend_request);
+            notifyObservers(event);
+            // TODO: dialog confirmare ca a trimis cererea
+            return null;
+        }
+        return friend_request;
+    }
+
+    public Prietenie deletePrietenie(Long id){
+        return deleteFriendshipFromDB(id);
     }
 
     public Iterable<Prietenie> getAll(){
@@ -72,6 +151,19 @@ public class PrietenieService implements Observable<PrietenieEntityChangeEvent> 
                 .collect(Collectors.toList());
         return friendships.stream()
                 .filter(x->x.getUser1Id() == id || x.getUser2Id() == id)
+                .toList();
+    }
+
+    public Iterable<Utilizator> getUsersNotFriendsWith(Long id) {
+        Iterable<Utilizator> users = repo_users.findAll();
+        Iterable<Prietenie> friendships = this.getFriendshipsOfUser(id);
+        List<Utilizator> result = StreamSupport.stream(users.spliterator(), false)
+                .collect(Collectors.toList());
+        List<Prietenie> friends = StreamSupport.stream(friendships.spliterator(), false)
+                .collect(Collectors.toList());
+        return result.stream()
+                .filter(x -> !Objects.equals(x.getId(), id))
+                .filter(x->friends.stream().noneMatch(y->y.getUser1Id() == x.getId() || y.getUser2Id() == x.getId()))
                 .toList();
     }
 

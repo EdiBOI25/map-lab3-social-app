@@ -5,11 +5,15 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import javafx.stage.Modality;
 import ubb.scs.map.domain.Prietenie;
 import ubb.scs.map.domain.Utilizator;
 import ubb.scs.map.service_v2.PrietenieService;
@@ -64,6 +68,23 @@ public class ManageFriendsController implements Observer<PrietenieEntityChangeEv
     @Override
     public void update(PrietenieEntityChangeEvent prietenieEntityChangeEvent) {
         initModel();
+    }
+
+    public void handleSendFriendRequest(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("../views/send-friend-request.fxml"));
+            AnchorPane root = (AnchorPane) loader.load();
+            Stage stage = new Stage();
+            stage.initModality(Modality.WINDOW_MODAL);
+            stage.setTitle("Send friend request");
+            stage.setScene(new Scene(root));
+            SendFriendRequestController controller = loader.getController();
+            controller.setService(service, stage, source_user);
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void handleDeleteFriend(ActionEvent actionEvent) {

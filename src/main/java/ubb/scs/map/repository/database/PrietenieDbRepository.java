@@ -70,29 +70,6 @@ public class PrietenieDbRepository implements Repository<Long, Prietenie> {
         return friendships;
     }
 
-    public Iterable<Prietenie> findFriendsOfUser(Long aLong) {
-        Set<Prietenie> friendships = new HashSet<>();
-        String sql_query = "SELECT * from friendship WHERE user1_id = ? OR user2_id = ?";
-        try (Connection connection = DriverManager.getConnection(url, username, password);
-             PreparedStatement statement = connection.prepareStatement(sql_query)) {
-            statement.setLong(1, aLong);
-            ResultSet resultSet = statement.executeQuery();
-            while (resultSet.next()) {
-                Long id = resultSet.getLong("id");
-                long user1_id = resultSet.getLong("user1_id");
-                long user2_id = resultSet.getLong("user2_id");
-                LocalDate date = resultSet.getDate("friends_from").toLocalDate();
-                Prietenie p = new Prietenie(user1_id, user2_id, date);
-                p.setId(id);
-                friendships.add(p);
-            }
-            return friendships;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return friendships;
-    }
-
     @Override
     public Optional<Prietenie> save(Prietenie entity) {
         int rez = -1;
@@ -101,11 +78,6 @@ public class PrietenieDbRepository implements Repository<Long, Prietenie> {
              ) {
             long user1_id = entity.getUser1Id();
             long user2_id = entity.getUser2Id();
-            if (user1_id > user2_id) {
-                long aux = user1_id;
-                user1_id = user2_id;
-                user2_id = aux;
-            }
             statement.setLong(1, user1_id);
             statement.setLong(2, user2_id);
             statement.setDate(3, Date.valueOf(entity.getDate()));
