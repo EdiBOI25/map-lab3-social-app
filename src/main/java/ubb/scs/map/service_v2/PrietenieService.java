@@ -98,7 +98,6 @@ public class PrietenieService implements Observable<PrietenieEntityChangeEvent> 
         if(requests.stream()
                 .anyMatch(x->x.getUser1Id() == friend_request.getUser1Id()
                         && x.getUser2Id() == friend_request.getUser2Id())) {
-            // TODO: dialog confirmare ca deja a trimis
             return friend_request;
         }
 
@@ -118,15 +117,12 @@ public class PrietenieService implements Observable<PrietenieEntityChangeEvent> 
             if(deleteRequestFromDB(reversed_request.getId()) == null){
                 return friend_request;
             }
-
-            // TODO: dialog confirmare ca deja a trimis alalalt si acum sunt prieteni
             return null;
         }
 
         if(addReuqestToDB(friend_request) == null){
             PrietenieEntityChangeEvent event = new PrietenieEntityChangeEvent(ChangeEventType.ADD, friend_request);
             notifyObservers(event);
-            // TODO: dialog confirmare ca a trimis cererea
             return null;
         }
         return friend_request;

@@ -57,7 +57,20 @@ public class SendFriendRequestController implements Observer<PrietenieEntityChan
 
                     addFriendButton.setOnAction(e -> {
                         Prietenie prietenie = new Prietenie(source_user.getId(), item.getId(), LocalDate.now());
-                        service.addFriendRequest(prietenie);
+                        if (service.addFriendRequest(prietenie) == null) {
+                            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                            alert.setTitle("Friend request sent");
+                            alert.setHeaderText("Friend request sent");
+                            alert.setContentText("Friend request sent to " + item.getFullName());
+                            alert.showAndWait();
+                        } else {
+                            Alert alert = new Alert(Alert.AlertType.ERROR);
+                            alert.setTitle("Friend request failed");
+                            alert.setHeaderText("Friend request failed");
+                            alert.setContentText("Friend request to " + item.getFullName() + " failed" +
+                                    "\nYou may have already sent a friend request to this user");
+                            alert.showAndWait();
+                        }
                     });
                     setGraphic(hBox);
                 }

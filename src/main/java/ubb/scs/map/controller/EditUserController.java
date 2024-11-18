@@ -70,7 +70,6 @@ public class EditUserController {
 
     private void saveMessage(Utilizator m)
     {
-        // TODO
         try {
             Utilizator r= this.service.addUtilizator(m);
             if (r==null)
