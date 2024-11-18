@@ -6,6 +6,7 @@ import ubb.scs.map.domain.Prietenie;
 import ubb.scs.map.domain.Utilizator;
 import ubb.scs.map.repository.Repository;
 import ubb.scs.map.utils.events.ChangeEventType;
+import ubb.scs.map.utils.events.PrietenieEntityChangeEvent;
 import ubb.scs.map.utils.events.UtilizatorEntityChangeEvent;
 import ubb.scs.map.utils.observer.Observable;
 import ubb.scs.map.utils.observer.Observer;
@@ -18,11 +19,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-public class PrietenieService implements Observable<UtilizatorEntityChangeEvent> {
+public class PrietenieService implements Observable<PrietenieEntityChangeEvent> {
     private Repository<Long, Prietenie> repo_friendship;
     private Repository<Long, Prietenie> repo_requests;
     private Repository<Long, Utilizator> repo_users;
-    private List<Observer<UtilizatorEntityChangeEvent>> observers=new ArrayList<>();
+    private List<Observer<PrietenieEntityChangeEvent>> observers=new ArrayList<>();
 
     public PrietenieService(Repository<Long, Prietenie> repo_friendship,
                             Repository<Long, Prietenie> repo_requests,
@@ -46,16 +47,16 @@ public class PrietenieService implements Observable<UtilizatorEntityChangeEvent>
 //        return user;
 //    }
 
-//    // TODO: deleteFriendship + deleteRequest
-//    public Utilizator deleteUtilizator(Long id){
-//        Optional<Utilizator> user=repo.delete(id);
-//        if (user.isPresent()) {
-//            notifyObservers(new UtilizatorEntityChangeEvent(ChangeEventType.DELETE, user.get()));
-//            return user.get();
-//        }
-//        return null;
-//    }
-//
+    // TODO: deleteFriendship + deleteRequest
+    public Prietenie deletePrietenie(Long id){
+        Optional<Prietenie> p =repo_friendship.delete(id);
+        if (p.isPresent()) {
+            notifyObservers(new PrietenieEntityChangeEvent(ChangeEventType.DELETE, p.get()));
+            return p.get();
+        }
+        return null;
+    }
+
     public Iterable<Prietenie> getAll(){
         return repo_friendship.findAll();
     }
@@ -77,18 +78,18 @@ public class PrietenieService implements Observable<UtilizatorEntityChangeEvent>
 
 
     @Override
-    public void addObserver(Observer<UtilizatorEntityChangeEvent> e) {
+    public void addObserver(Observer<PrietenieEntityChangeEvent> e) {
         observers.add(e);
 
     }
 
     @Override
-    public void removeObserver(Observer<UtilizatorEntityChangeEvent> e) {
+    public void removeObserver(Observer<PrietenieEntityChangeEvent> e) {
         //observers.remove(e);
     }
 
     @Override
-    public void notifyObservers(UtilizatorEntityChangeEvent t) {
+    public void notifyObservers(PrietenieEntityChangeEvent t) {
 
         observers.stream().forEach(x->x.update(t));
     }

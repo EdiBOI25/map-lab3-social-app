@@ -3,7 +3,9 @@ package ubb.scs.map.controller;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -12,6 +14,7 @@ import ubb.scs.map.domain.Prietenie;
 import ubb.scs.map.domain.Utilizator;
 import ubb.scs.map.service_v2.PrietenieService;
 import ubb.scs.map.service_v2.UtilizatorService;
+import ubb.scs.map.utils.events.PrietenieEntityChangeEvent;
 import ubb.scs.map.utils.events.UtilizatorEntityChangeEvent;
 import ubb.scs.map.utils.observer.Observer;
 
@@ -20,7 +23,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-public class ManageFriendsController implements Observer<UtilizatorEntityChangeEvent> {
+public class ManageFriendsController implements Observer<PrietenieEntityChangeEvent> {
     PrietenieService service;
     ObservableList<Prietenie> model = FXCollections.observableArrayList();
     Utilizator source_user;
@@ -59,7 +62,16 @@ public class ManageFriendsController implements Observer<UtilizatorEntityChangeE
     }
 
     @Override
-    public void update(UtilizatorEntityChangeEvent utilizatorEntityChangeEvent) {
+    public void update(PrietenieEntityChangeEvent prietenieEntityChangeEvent) {
         initModel();
+    }
+
+    public void handleDeleteFriend(ActionEvent actionEvent) {
+        Prietenie p =(Prietenie) tableFriendshipsView.getSelectionModel().getSelectedItem();
+        if (p != null) {
+            Prietenie deleted = service.deletePrietenie(p.getId());
+            MessageAlert.showMessage(null, Alert.AlertType.CONFIRMATION,"Delete friendship","Prietenia a fost stearsa");
+        }
+        else MessageAlert.showErrorMessage(null, "NU ati selectat nici un utilizator");
     }
 }

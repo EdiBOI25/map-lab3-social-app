@@ -147,7 +147,7 @@ public class UtilizatorController implements Observer<UtilizatorEntityChangeEven
             loader.setLocation(getClass().getResource("../views/friendships-view.fxml"));
             AnchorPane root = (AnchorPane) loader.load();
             Stage dialogStage = new Stage();
-            dialogStage.setTitle("Manage Friends");
+            dialogStage.setTitle("Manage Friends: " + user.getFullName());
             dialogStage.initModality(Modality.WINDOW_MODAL);
             Scene scene = new Scene(root);
             dialogStage.setScene(scene);
