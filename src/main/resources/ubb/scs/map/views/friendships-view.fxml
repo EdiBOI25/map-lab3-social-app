@@ -31,7 +31,7 @@
                      <children>
                         <Button mnemonicParsing="false" onAction="#handleSendFriendRequest" text="Find New Friends" />
                         <Button mnemonicParsing="false" onAction="#handleDeleteFriend" text="Unfriend" />
-                        <Button mnemonicParsing="false" text="Incoming Requests" />
+                        <Button mnemonicParsing="false" onAction="#handleIncomingRequests" text="Incoming Requests" />
                      </children>
                      <opaqueInsets>
                         <Insets />

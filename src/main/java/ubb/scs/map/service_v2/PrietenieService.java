@@ -163,6 +163,15 @@ public class PrietenieService implements Observable<PrietenieEntityChangeEvent> 
                 .toList();
     }
 
+    public Iterable<Prietenie> getIncomingRequestsForUser(Long id) {
+        Iterable<Prietenie> friendships = repo_requests.findAll();
+        List<Prietenie> result = StreamSupport.stream(friendships.spliterator(), false)
+                .collect(Collectors.toList());
+        return result.stream()
+                .filter(x -> x.getUser2Id() == id)
+                .toList();
+    }
+
 
 
     @Override

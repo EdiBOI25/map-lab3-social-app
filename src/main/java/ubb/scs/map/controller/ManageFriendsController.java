@@ -95,4 +95,21 @@ public class ManageFriendsController implements Observer<PrietenieEntityChangeEv
         }
         else MessageAlert.showErrorMessage(null, "NU ati selectat nici un utilizator");
     }
+
+    public void handleIncomingRequests(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("../views/incoming-requests.fxml"));
+            AnchorPane root = (AnchorPane) loader.load();
+            Stage stage = new Stage();
+            stage.initModality(Modality.WINDOW_MODAL);
+            stage.setTitle("Incoming request");
+            stage.setScene(new Scene(root));
+            IncomingRequestsController controller = loader.getController();
+            controller.setService(service, stage, source_user);
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
