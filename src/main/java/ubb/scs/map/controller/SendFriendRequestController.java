@@ -1,6 +1,8 @@
 package ubb.scs.map.controller;
 
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -28,6 +30,8 @@ public class SendFriendRequestController implements Observer<PrietenieEntityChan
 
     @FXML
     private ListView<Utilizator> listView;
+    @FXML
+    TextField searchTextField;
 
     public void setService(PrietenieService service, Stage stage, Utilizator u) {
         this.service = service;
@@ -38,6 +42,7 @@ public class SendFriendRequestController implements Observer<PrietenieEntityChan
 
     @FXML
     public void initialize() {
+        searchTextField.setText("");
         listView.setCellFactory(param -> new ListCell<Utilizator>() {
             @Override
             protected void updateItem(Utilizator item, boolean empty) {
@@ -84,6 +89,17 @@ public class SendFriendRequestController implements Observer<PrietenieEntityChan
         List<Utilizator> users = StreamSupport.stream(result.spliterator(), false)
                 .collect(Collectors.toList());
         model.setAll(users);
+        searchTextField.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                List<Utilizator> filtered_users = users.stream()
+                        .filter(x -> x.getFullName().toLowerCase()
+                                .contains(newValue))
+                        .toList();
+                System.out.println("Filtering users containing " + searchTextField.getText());
+                model.setAll(filtered_users);
+            }
+        });
     }
     @Override
     public void update(PrietenieEntityChangeEvent prietenieEntityChangeEvent) {

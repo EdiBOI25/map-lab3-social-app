@@ -1,6 +1,11 @@
 package ubb.scs.map.controller;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.event.EventHandler;
+import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyEvent;
 import ubb.scs.map.domain.Utilizator;
 import ubb.scs.map.service_v2.PrietenieService;
 import ubb.scs.map.service_v2.UtilizatorService;
@@ -34,6 +39,8 @@ public class UtilizatorController implements Observer<UtilizatorEntityChangeEven
 
 
     @FXML
+    TextField searchTextField;
+    @FXML
     TableView<Utilizator> tableView;
     @FXML
     TableColumn<Utilizator,String> tableColumnFirstName;
@@ -55,6 +62,7 @@ public class UtilizatorController implements Observer<UtilizatorEntityChangeEven
 
     @FXML
     public void initialize() {
+        searchTextField.setText("");
         tableColumnFirstName.setCellValueFactory(new PropertyValueFactory<Utilizator, String>("firstName"));
         tableColumnLastName.setCellValueFactory(new PropertyValueFactory<Utilizator, String>("lastName"));
         tableView.setItems(model);
@@ -65,6 +73,17 @@ public class UtilizatorController implements Observer<UtilizatorEntityChangeEven
         List<Utilizator> users = StreamSupport.stream(messages.spliterator(), false)
                 .collect(Collectors.toList());
         model.setAll(users);
+        searchTextField.textProperty().addListener(new ChangeListener<String>() {
+           @Override
+           public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+               List<Utilizator> filtered_users = users.stream()
+                       .filter(x -> x.getFullName().toLowerCase()
+                               .contains(newValue))
+                       .toList();
+               System.out.println("Filtering users containing " + searchTextField.getText());
+               model.setAll(filtered_users);
+           }
+       });
     }
 
     @Override

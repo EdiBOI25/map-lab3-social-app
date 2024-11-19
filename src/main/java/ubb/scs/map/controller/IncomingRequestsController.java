@@ -50,12 +50,13 @@ public class IncomingRequestsController implements Observer<PrietenieEntityChang
                     Utilizator requester = service.getUserById(requester_id);
                     if (requester != null) {
                         Label nameLabel = new Label(requester.getFullName());
+                        Label requestDateLabel = new Label("(" + item.getDate() + ")");
                         Button acceptRequestButton = new Button("Accept");
                         Button declineRequestButton = new Button("Decline");
 
                         Region spacer = new Region();
                         HBox.setHgrow(spacer, Priority.ALWAYS);
-                        hBox.getChildren().addAll(nameLabel, spacer, acceptRequestButton, declineRequestButton);
+                        hBox.getChildren().addAll(nameLabel, spacer, requestDateLabel, acceptRequestButton, declineRequestButton);
 
                         acceptRequestButton.setOnAction(e -> {
                             Prietenie prietenie = new Prietenie(source_user.getId(), item.getUser1Id(), LocalDate.now());
