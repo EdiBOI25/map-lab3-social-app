@@ -15,7 +15,7 @@ import ubb.scs.map.service.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-
+// TODO: message service, observable, event notify sau ceva, controller, apoi fereastra de chat
 // Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
 // then press Enter. You can now see whitespace characters in your code.
 public class Main {
