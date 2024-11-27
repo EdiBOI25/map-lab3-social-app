@@ -91,8 +91,14 @@ public class ChatController implements Observer<MessageEntityChangeEvent> {
     }
 
     public void handleSend() {
+        if (messageTextArea.getText().isEmpty()) {
+            return;
+        }
         Message message = new Message(source_user.getId(), destination_user.getId(), messageTextArea.getText(), LocalDateTime.now());
-        service.sendMessage(message);
+        message.setId(0L);
+        if (service.sendMessage(message) == null) {
+            messageTextArea.setText("");
+        }
     }
 
     @Override

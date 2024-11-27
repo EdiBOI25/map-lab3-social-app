@@ -78,7 +78,8 @@ public class MessageService implements Observable<MessageEntityChangeEvent> {
         List<Message> result = StreamSupport.stream(messages.spliterator(), false)
                 .collect(Collectors.toList());
         return result.stream()
-                .filter(x -> x.getUserFromId() == user1_id && x.getUserToId() == user2_id)
+                .filter(x -> x.getUserFromId() == user1_id && x.getUserToId() == user2_id ||
+                        x.getUserFromId() == user2_id && x.getUserToId() == user1_id)
                 .sorted(Comparator.comparing(Message::getDate))
                 .toList();
     }

@@ -93,7 +93,7 @@ public class MessageDbRepository implements Repository<Long, Message> {
         int rez = -1;
         try (Connection connection = DriverManager.getConnection(url, username, password);
              PreparedStatement statement = connection.prepareStatement(
-                     "INSERT INTO messages (user_from_id, user_to_id, message, date, reply_to_id) VALUES (?, ?)");
+                     "INSERT INTO messages (user_from_id, user_to_id, message, date, reply_to_id) VALUES (?, ?, ?, ?, ?)");
              ) {
             statement.setLong(1, entity.getUserFromId());
             statement.setLong(2, entity.getUserToId());
