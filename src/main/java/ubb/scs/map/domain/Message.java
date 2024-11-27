@@ -41,4 +41,15 @@ public class Message extends Entity<Long> {
     public long getMessageReplyToId() {
         return message_reply_to_id;
     }
+
+    @Override
+    public String toString() {
+        return "Message{" +
+                "user_from_id=" + user_from_id +
+                ", user_to_id=" + user_to_id +
+                ", message='" + message + '\'' +
+                ", date=" + date +
+                ", message_reply_to_id=" + message_reply_to_id +
+                '}';
+    }
 }

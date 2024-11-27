@@ -7,6 +7,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import ubb.scs.map.domain.Utilizator;
+import ubb.scs.map.service_v2.MessageService;
 import ubb.scs.map.service_v2.PrietenieService;
 import ubb.scs.map.service_v2.UtilizatorService;
 import ubb.scs.map.utils.events.UtilizatorEntityChangeEvent;
@@ -35,6 +36,7 @@ import java.util.stream.StreamSupport;
 public class UtilizatorController implements Observer<UtilizatorEntityChangeEvent> {
     UtilizatorService service;
     PrietenieService service_friendship;
+    MessageService service_message;
     ObservableList<Utilizator> model = FXCollections.observableArrayList();
 
 
@@ -58,6 +60,10 @@ public class UtilizatorController implements Observer<UtilizatorEntityChangeEven
 
     public void setPrietenieService(PrietenieService service) {
         this.service_friendship = service;
+    }
+
+    public void setMessageService(MessageService service) {
+        this.service_message = service;
     }
 
     @FXML
@@ -171,7 +177,7 @@ public class UtilizatorController implements Observer<UtilizatorEntityChangeEven
             Scene scene = new Scene(root);
             dialogStage.setScene(scene);
             ManageFriendsController manageFriendsController = loader.getController();
-            manageFriendsController.setPrietenieService(service_friendship, dialogStage, user);
+            manageFriendsController.setPrietenieService(service_friendship, dialogStage, user, service_message);
             dialogStage.show();
         } catch (IOException e) {
             e.printStackTrace();

@@ -16,12 +16,14 @@ import javafx.stage.Stage;
 import javafx.stage.Modality;
 import ubb.scs.map.domain.Prietenie;
 import ubb.scs.map.domain.Utilizator;
+import ubb.scs.map.service_v2.MessageService;
 import ubb.scs.map.service_v2.PrietenieService;
 import ubb.scs.map.service_v2.UtilizatorService;
 import ubb.scs.map.utils.events.PrietenieEntityChangeEvent;
 import ubb.scs.map.utils.events.UtilizatorEntityChangeEvent;
 import ubb.scs.map.utils.observer.Observer;
 
+import javax.swing.*;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,6 +33,7 @@ public class ManageFriendsController implements Observer<PrietenieEntityChangeEv
     PrietenieService service;
     ObservableList<Prietenie> model = FXCollections.observableArrayList();
     Utilizator source_user;
+    MessageService service_message;
 
     @FXML
     TableView<Prietenie> tableFriendshipsView;
@@ -39,9 +42,10 @@ public class ManageFriendsController implements Observer<PrietenieEntityChangeEv
     @FXML
     TableColumn<Prietenie,String> tableColumnFriendsFrom;
 
-    public void setPrietenieService(PrietenieService service, Stage stage, Utilizator u) {
+    public void setPrietenieService(PrietenieService service, Stage stage, Utilizator u, MessageService service_message) {
         this.service = service;
         this.source_user = u;
+        this.service_message = service_message;
         service.addObserver(this);
         initModel();
     }
@@ -107,6 +111,33 @@ public class ManageFriendsController implements Observer<PrietenieEntityChangeEv
             stage.setScene(new Scene(root));
             IncomingRequestsController controller = loader.getController();
             controller.setService(service, stage, source_user);
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void handleChat(ActionEvent actionEvent) {
+        Prietenie selected = tableFriendshipsView.getSelectionModel().getSelectedItem();
+        if (selected != null) {
+            long friendId = selected.getUser1Id() == source_user.getId() ? selected.getUser2Id() : selected.getUser1Id();
+            Utilizator friend = service.getUserById(friendId);
+            showChatWindow(friend);
+        } else
+            MessageAlert.showErrorMessage(null, "NU ati selectat nici un student");
+    }
+
+    private void showChatWindow(Utilizator destination_user) {
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("../views/chat.fxml"));
+            AnchorPane root = (AnchorPane) loader.load();
+            Stage stage = new Stage();
+            stage.initModality(Modality.WINDOW_MODAL);
+            stage.setTitle("Chat with " + destination_user.getFullName());
+            stage.setScene(new Scene(root));
+            ChatController controller = loader.getController();
+            controller.setService(service_message, stage, source_user, destination_user);
             stage.show();
         } catch (Exception e) {
             e.printStackTrace();

@@ -1,14 +1,18 @@
 package ubb.scs.map;
 
 import ubb.scs.map.controller.UtilizatorController;
+import ubb.scs.map.domain.Message;
 import ubb.scs.map.domain.Prietenie;
 import ubb.scs.map.domain.Utilizator;
+import ubb.scs.map.domain.validators.MessageValidator;
 import ubb.scs.map.domain.validators.PrietenieValidator;
 import ubb.scs.map.domain.validators.UtilizatorValidator;
 import ubb.scs.map.repository.Repository;
 import ubb.scs.map.repository.database.FriendRequestDbRepository;
+import ubb.scs.map.repository.database.MessageDbRepository;
 import ubb.scs.map.repository.database.PrietenieDbRepository;
 import ubb.scs.map.repository.database.UtilizatorDbRepository;
+import ubb.scs.map.service_v2.MessageService;
 import ubb.scs.map.service_v2.PrietenieService;
 import ubb.scs.map.service_v2.UtilizatorService;
 import javafx.application.Application;
@@ -40,6 +44,7 @@ public class HelloApplication extends Application {
     Repository<Long, Utilizator> utilizatorRepository;
     UtilizatorService service;
     PrietenieService service_friendship;
+    MessageService service_message;
 
     public static void main(String[] args) {
         launch(args);
@@ -67,8 +72,12 @@ public class HelloApplication extends Application {
         Repository<Long, Prietenie> friendRequestRepository =
                 new FriendRequestDbRepository(url, username, password, new PrietenieValidator(utilizatorRepository));
 
+        Repository<Long, Message> messageRepository =
+                new MessageDbRepository(url, username, password, new MessageValidator());
+
         service =new UtilizatorService(utilizatorRepository);
         service_friendship = new PrietenieService(prietenieRepository, friendRequestRepository, utilizatorRepository);
+        service_message = new MessageService(messageRepository, utilizatorRepository);
         initView(primaryStage);
         primaryStage.setWidth(800);
         primaryStage.show();
@@ -88,5 +97,6 @@ public class HelloApplication extends Application {
         UtilizatorController userController = fxmlLoader.getController();
         userController.setUtilizatorService(service);
         userController.setPrietenieService(service_friendship);
+        userController.setMessageService(service_message);
     }
 }
