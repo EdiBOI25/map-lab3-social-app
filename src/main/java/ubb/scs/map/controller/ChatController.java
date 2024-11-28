@@ -10,6 +10,8 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 import ubb.scs.map.domain.Message;
 import ubb.scs.map.domain.Prietenie;
@@ -60,19 +62,20 @@ public class ChatController implements Observer<MessageEntityChangeEvent> {
                     setText(null);
                 } else {
                     HBox hBox = new HBox();
-                    Label message_label = new Label(item.getMessageText());
-                    message_label.setWrapText(true);
+                    TextFlow textFlow = new TextFlow(new Text(item.getMessageText()));
+                    textFlow.setMaxWidth(200); // Set a maximum width for wrapping
+                    textFlow.setStyle("-fx-background-color: lightgray; -fx-padding: 10px; -fx-background-radius: 10px;");
 
                     if (item.getUserFromId() == source_user.getId()) {
                         // Sent message
-                        message_label.setStyle("-fx-background-color: lightcoral; -fx-padding: 10px; -fx-background-radius: 10px;");
+                        textFlow.setStyle("-fx-background-color: lightcoral; -fx-padding: 10px; -fx-background-radius: 10px;");
                         hBox.setAlignment(Pos.CENTER_RIGHT);
                     } else {
                         // Received message
-                        message_label.setStyle("-fx-background-color: lightgray; -fx-padding: 10px; -fx-background-radius: 10px;");
+                        textFlow.setStyle("-fx-background-color: lightgray; -fx-padding: 10px; -fx-background-radius: 10px;");
                         hBox.setAlignment(Pos.CENTER_LEFT);
                     }
-                    hBox.getChildren().add(message_label);
+                    hBox.getChildren().add(textFlow);
                     setGraphic(hBox);
                 }
             }
