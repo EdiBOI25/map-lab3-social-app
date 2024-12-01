@@ -5,11 +5,14 @@ package ubb.scs.map.service_v2;
 import ubb.scs.map.domain.Prietenie;
 import ubb.scs.map.domain.Utilizator;
 import ubb.scs.map.repository.Repository;
+import ubb.scs.map.repository.database.PrietenieDbRepository;
 import ubb.scs.map.utils.events.ChangeEventType;
 import ubb.scs.map.utils.events.PrietenieEntityChangeEvent;
 import ubb.scs.map.utils.events.UtilizatorEntityChangeEvent;
 import ubb.scs.map.utils.observer.Observable;
 import ubb.scs.map.utils.observer.Observer;
+import ubb.scs.map.utils.paging.Page;
+import ubb.scs.map.utils.paging.Pageable;
 
 
 import java.time.LocalDate;
@@ -172,7 +175,15 @@ public class PrietenieService implements Observable<PrietenieEntityChangeEvent> 
                 .toList();
     }
 
+    public Page<Prietenie> findAllOnPage(Pageable pageable, long user_id) {
+        PrietenieDbRepository repo_friendship = (PrietenieDbRepository) this.repo_friendship;
+        return repo_friendship.findAllOnPage(pageable, user_id);
+    }
 
+    public int getNumberOfFriends(Long id) {
+        PrietenieDbRepository repo_friendship = (PrietenieDbRepository) this.repo_friendship;
+        return repo_friendship.friendsCount(id);
+    }
 
     @Override
     public void addObserver(Observer<PrietenieEntityChangeEvent> e) {

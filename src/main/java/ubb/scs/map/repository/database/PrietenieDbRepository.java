@@ -139,6 +139,7 @@ public class PrietenieDbRepository implements Repository<Long, Prietenie> {
                 }
             }
         }
+
         return friendshipsOnPage;
     }
 
@@ -153,5 +154,22 @@ public class PrietenieDbRepository implements Repository<Long, Prietenie> {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public int friendsCount(long user_id) {
+        String sql = "select count(*) from friendship where user1_id = ? or user2_id = ?";
+        try (Connection connection = DriverManager.getConnection(url, username, password);
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setLong(1, user_id);
+            statement.setLong(2, user_id);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getInt(1);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 }

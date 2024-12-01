@@ -7,9 +7,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
@@ -22,6 +20,8 @@ import ubb.scs.map.service_v2.UtilizatorService;
 import ubb.scs.map.utils.events.PrietenieEntityChangeEvent;
 import ubb.scs.map.utils.events.UtilizatorEntityChangeEvent;
 import ubb.scs.map.utils.observer.Observer;
+import ubb.scs.map.utils.paging.Page;
+import ubb.scs.map.utils.paging.Pageable;
 
 import javax.swing.*;
 import java.time.LocalDate;
@@ -41,12 +41,23 @@ public class ManageFriendsController implements Observer<PrietenieEntityChangeEv
     TableColumn<Prietenie,String> tableColumnFriendName;
     @FXML
     TableColumn<Prietenie,String> tableColumnFriendsFrom;
+    @FXML
+    private Button buttonNext;
+    @FXML
+    private Button buttonPrevious;
+    @FXML
+    private Label labelPage;
+
+    private int pageSize = 2;
+    private int currentPage = 0;
+    private int totalNumberOfElements = 0;
 
     public void setPrietenieService(PrietenieService service, Stage stage, Utilizator u, MessageService service_message) {
         this.service = service;
         this.source_user = u;
         this.service_message = service_message;
         service.addObserver(this);
+        totalNumberOfElements = this.service.getNumberOfFriends(source_user.getId());
         initModel();
     }
 
@@ -63,11 +74,31 @@ public class ManageFriendsController implements Observer<PrietenieEntityChangeEv
     }
 
     private void initModel() {
-        Iterable<Prietenie> result = service.getFriendshipsOfUser(this.source_user.getId());
-        List<Prietenie> friendships = StreamSupport.stream(result.spliterator(), false)
+        Page<Prietenie> page = service.findAllOnPage(new Pageable(currentPage, pageSize), source_user.getId());
+//        int maxPage = (int) Math.ceil((double) page.getTotalNumberOfElements() / pageSize) - 1;
+        int maxPage = (int) Math.ceil((double) this.totalNumberOfElements / pageSize) - 1;
+        if (maxPage == -1) {
+            maxPage = 0;
+        }
+        if (currentPage > maxPage) {
+            currentPage = maxPage;
+            page = service.findAllOnPage(new Pageable(currentPage, pageSize), source_user.getId());
+        }
+//        totalNumberOfElements = page.getTotalNumberOfElements();
+        buttonPrevious.setDisable(currentPage == 0);
+        buttonNext.setDisable((currentPage + 1) * pageSize >= totalNumberOfElements);
+        List<Prietenie> friendshipList = StreamSupport.stream(page.getElementsOnPage().spliterator(), false)
                 .collect(Collectors.toList());
-        model.setAll(friendships);
+        model.setAll(friendshipList);
+        labelPage.setText("Page " + (currentPage + 1) + " of " + (maxPage + 1));
     }
+
+//    private void initModel() {
+//        Iterable<Prietenie> result = service.getFriendshipsOfUser(this.source_user.getId());
+//        List<Prietenie> friendships = StreamSupport.stream(result.spliterator(), false)
+//                .collect(Collectors.toList());
+//        model.setAll(friendships);
+//    }
 
     @Override
     public void update(PrietenieEntityChangeEvent prietenieEntityChangeEvent) {
@@ -142,5 +173,15 @@ public class ManageFriendsController implements Observer<PrietenieEntityChangeEv
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void onNextPage(ActionEvent actionEvent) {
+        currentPage ++;
+        initModel();
+    }
+
+    public void onPreviousPage(ActionEvent actionEvent) {
+        currentPage --;
+        initModel();
     }
 }
