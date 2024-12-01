@@ -5,12 +5,13 @@ import ubb.scs.map.domain.Prietenie;
 import ubb.scs.map.domain.Utilizator;
 import ubb.scs.map.domain.validators.Validator;
 import ubb.scs.map.repository.Repository;
+import ubb.scs.map.utils.paging.Page;
+import ubb.scs.map.utils.paging.Pageable;
 
 import java.sql.*;
+import java.sql.Date;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 public class PrietenieDbRepository implements Repository<Long, Prietenie> {
     private String url;
@@ -115,5 +116,42 @@ public class PrietenieDbRepository implements Repository<Long, Prietenie> {
     @Override
     public Optional<Prietenie> update(Prietenie entity) {
         return Optional.empty();
+    }
+
+    private List<Prietenie> findAllOnPage(Connection connection, Pageable pageable, long user_id) throws SQLException {
+        List<Prietenie> friendshipsOnPage = new ArrayList<>();
+        String sql = "select * from friendship where user1_id = ? or user2_id = ?";
+        sql += " limit ? offset ?";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setLong(1, user_id);
+            statement.setLong(2, user_id);
+            statement.setInt(3, pageable.getPageSize());
+            statement.setInt(4, pageable.getPageSize() * pageable.getPageNumber());
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    Long id = resultSet.getLong("id");
+                    long user1_id = resultSet.getLong("user1_id");
+                    long user2_id = resultSet.getLong("user2_id");
+                    LocalDate date = resultSet.getDate("friends_from").toLocalDate();
+                    Prietenie p = new Prietenie(user1_id, user2_id, date);
+                    p.setId(id);
+                    friendshipsOnPage.add(p);
+                }
+            }
+        }
+        return friendshipsOnPage;
+    }
+
+    public Page<Prietenie> findAllOnPage(Pageable pageable, long user_id) {
+        try (Connection connection = DriverManager.getConnection(url, username, password)) {
+            List<Prietenie> friendshipsOnPage;
+            friendshipsOnPage = findAllOnPage(connection, pageable, user_id);
+            if (friendshipsOnPage.isEmpty()) {
+                return new Page<>(Collections.emptyList(), 0);
+            }
+            return new Page<>(friendshipsOnPage, friendshipsOnPage.size());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
